@@ -1,12 +1,19 @@
 import { UserRegisterModel } from "../RegisterFeature/UserRegister";
 
+type HTTPClientResponse = number | Error
+
 interface HTTPClient<T> {
-  get(url: URL, params: T): Promise<Error>;
+  get(url: URL, params: T): Promise<HTTPClientResponse>;
 }
 
 class NoConnectivityError implements Error {
   name: "No connectivity error";
   message: "Error trying to access to network";
+}
+
+class InvalidDataError implements Error {
+  name: "Invalid data error";
+  message: "Invalid data returned from HTTPClient";
 }
 
 class RemoteUserRegister {
@@ -15,9 +22,14 @@ class RemoteUserRegister {
     private readonly client: HTTPClient<UserRegisterModel>,
     ) {}
 
-  async register(params: UserRegisterModel): Promise<Error> {
-    await this.client.get(this.url, params)
-    return new NoConnectivityError()
+  async register(params: UserRegisterModel): Promise<HTTPClientResponse> {
+    const response: HTTPClientResponse = await this.client.get(this.url, params)
+
+    if (response instanceof Error) {
+      return new NoConnectivityError()
+    }
+
+    return new InvalidDataError();
   }
 }
 
@@ -47,6 +59,15 @@ describe('RemoteUserRegister', () => {
     expect(result).toStrictEqual(new NoConnectivityError());
   })
 
+  test('register delivers invalid data error on non 200 status code', async () => {
+    const { sut, client } = makeSUT()
+
+    client.completeWithSuccess(300);
+    const result = await sut.register(anyUserRegisterModel())
+
+    expect(result).toStrictEqual(new InvalidDataError());
+  })
+
   type SutTypes = { sut: RemoteUserRegister, client: HTTPClientSpy }
   function makeSUT(url: URL = anyURL()): SutTypes {
     const client = new HTTPClientSpy()
@@ -66,15 +87,19 @@ describe('RemoteUserRegister', () => {
 
   class HTTPClientSpy implements HTTPClient<UserRegisterModel> {
     requests: { url: URL, params: UserRegisterModel }[] = []
-    response: Error
+    response: HTTPClientResponse
 
-    async get(url: URL, params: UserRegisterModel): Promise<Error> {
+    async get(url: URL, params: UserRegisterModel): Promise<HTTPClientResponse> {
       this.requests.push({ url, params })
       return this.response
     }
 
     completeWith(error: Error) {
       this.response = error
+    }
+
+    completeWithSuccess(statusCode: number) {
+      this.response = statusCode
     }
   }
 })
