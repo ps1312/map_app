@@ -1,13 +1,13 @@
-type UserRegisterModel = {}
+export type UserRegisterModel = {}
 
-type User = {}
-type AuthenticationToken = {}
+export type User = {}
+export type AuthenticationToken = {}
 
-type AuthenticatedUser = {
+export type AuthenticatedUser = {
   user: User;
   token: AuthenticationToken;
 }
 
-interface UserRegister {
+export interface UserRegister {
   register(userRegisterModel: UserRegisterModel): AuthenticatedUser;
 }
