@@ -1,5 +1,15 @@
-export type HTTPClientResponse = number | Error
+export class HTTPClientResponse {
+  statusCode: number;
+  body: any;
+
+  constructor(statusCode: number, body: any) {
+    this.statusCode = statusCode
+    this.body = body
+  }
+}
+
+export type HTTPClientResult = HTTPClientResponse | Error
 
 export interface HTTPClient<T> {
-  get(url: URL, params: T): Promise<HTTPClientResponse>;
+  get(url: URL, params: T): Promise<HTTPClientResult>;
 }

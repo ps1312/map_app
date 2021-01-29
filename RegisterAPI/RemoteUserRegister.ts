@@ -1,5 +1,5 @@
 import { UserRegisterModel } from "../RegisterFeature/UserRegister";
-import { HTTPClient, HTTPClientResponse } from "./HTTPClient";
+import { HTTPClient, HTTPClientResult, HTTPClientResponse } from "./HTTPClient";
 import { InvalidDataError, NoConnectivityError } from "./SharedErrors";
 
 export class RemoteUserRegister {
@@ -8,13 +8,13 @@ export class RemoteUserRegister {
     private readonly client: HTTPClient<UserRegisterModel>,
     ) {}
 
-  async register(params: UserRegisterModel): Promise<HTTPClientResponse> {
-    const response: HTTPClientResponse = await this.client.get(this.url, params)
+  async register(params: UserRegisterModel): Promise<HTTPClientResult> {
+    const response = await this.client.get(this.url, params)
 
-    if (response instanceof Error) {
-      return new NoConnectivityError()
+    if (response instanceof HTTPClientResponse) {
+      return new InvalidDataError();
     }
 
-    return new InvalidDataError();
+    return new NoConnectivityError()
   }
 }

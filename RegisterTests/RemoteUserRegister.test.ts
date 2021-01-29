@@ -1,4 +1,4 @@
-import { HTTPClient, HTTPClientResponse } from "../RegisterAPI/HTTPClient";
+import { HTTPClient, HTTPClientResponse, HTTPClientResult } from "../RegisterAPI/HTTPClient";
 import { RemoteUserRegister } from "../RegisterAPI/RemoteUserRegister";
 import { NoConnectivityError, InvalidDataError } from "../RegisterAPI/SharedErrors";
 import { UserRegisterModel } from "../RegisterFeature/UserRegister";
@@ -57,9 +57,9 @@ describe('RemoteUserRegister', () => {
 
   class HTTPClientSpy implements HTTPClient<UserRegisterModel> {
     requests: { url: URL, params: UserRegisterModel }[] = []
-    response: HTTPClientResponse
+    response: HTTPClientResult
 
-    async get(url: URL, params: UserRegisterModel): Promise<HTTPClientResponse> {
+    async get(url: URL, params: UserRegisterModel): Promise<HTTPClientResult> {
       this.requests.push({ url, params })
       return this.response
     }
@@ -69,7 +69,7 @@ describe('RemoteUserRegister', () => {
     }
 
     completeWithSuccess(statusCode: number) {
-      this.response = statusCode
+      this.response = new HTTPClientResponse(statusCode, null);
     }
   }
 })
