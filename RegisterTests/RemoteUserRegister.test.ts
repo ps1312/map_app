@@ -32,10 +32,14 @@ describe('RemoteUserRegister', () => {
   test('register delivers invalid data error on non 200 status code', async () => {
     const { sut, client } = makeSUT()
 
-    client.completeWithSuccess(300);
-    const result = await sut.register(anyUserRegisterModel())
+    client.completeWithSuccess(199);
+    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
 
-    expect(result).toStrictEqual(new InvalidDataError());
+    client.completeWithSuccess(201);
+    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
+
+    client.completeWithSuccess(300);
+    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
   })
 
   type SutTypes = { sut: RemoteUserRegister, client: HTTPClientSpy }
