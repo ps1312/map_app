@@ -32,13 +32,20 @@ describe('RemoteUserRegister', () => {
   test('register delivers invalid data error on non 200 status code', async () => {
     const { sut, client } = makeSUT()
 
-    client.completeWithSuccess(199);
+    client.completeWithSuccess(199, "");
     expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
 
-    client.completeWithSuccess(201);
+    client.completeWithSuccess(201, "");
     expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
 
-    client.completeWithSuccess(300);
+    client.completeWithSuccess(300, "");
+    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
+  })
+
+  test('register delivers invalid data error on invalid response body', async () => {
+    const { sut, client } = makeSUT()
+
+    client.completeWithSuccess(200, "invalid response body")
     expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
   })
 
@@ -55,8 +62,7 @@ describe('RemoteUserRegister', () => {
   }
 
   function anyUserRegisterModel(): UserRegisterModel {
-    return { username: 'any-username', email: 'any-email@mail.com',
-            password: 'any-password', passwordConfirmation: 'any-password' }
+    return { email: 'any-email@mail.com', password: 'any-password' }
   }
 
   class HTTPClientSpy implements HTTPClient<UserRegisterModel> {
@@ -72,8 +78,8 @@ describe('RemoteUserRegister', () => {
       this.response = error
     }
 
-    completeWithSuccess(statusCode: number) {
-      this.response = new HTTPClientResponse(statusCode, null);
+    completeWithSuccess(statusCode: number, body: string) {
+      this.response = new HTTPClientResponse(statusCode, body);
     }
   }
 })

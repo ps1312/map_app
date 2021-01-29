@@ -1,4 +1,7 @@
-export type UserRegisterModel = {}
+export type UserRegisterModel = {
+  email: string;
+  password: string;
+}
 
 export type User = {}
 export type AuthenticationToken = {}
