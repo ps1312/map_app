@@ -1,37 +1,7 @@
+import { HTTPClient, HTTPClientResponse } from "../RegisterAPI/HTTPClient";
+import { RemoteUserRegister } from "../RegisterAPI/RemoteUserRegister";
+import { NoConnectivityError, InvalidDataError } from "../RegisterAPI/SharedErrors";
 import { UserRegisterModel } from "../RegisterFeature/UserRegister";
-
-type HTTPClientResponse = number | Error
-
-interface HTTPClient<T> {
-  get(url: URL, params: T): Promise<HTTPClientResponse>;
-}
-
-class NoConnectivityError implements Error {
-  name: "No connectivity error";
-  message: "Error trying to access to network";
-}
-
-class InvalidDataError implements Error {
-  name: "Invalid data error";
-  message: "Invalid data returned from HTTPClient";
-}
-
-class RemoteUserRegister {
-  constructor(
-    private readonly url: URL,
-    private readonly client: HTTPClient<UserRegisterModel>,
-    ) {}
-
-  async register(params: UserRegisterModel): Promise<HTTPClientResponse> {
-    const response: HTTPClientResponse = await this.client.get(this.url, params)
-
-    if (response instanceof Error) {
-      return new NoConnectivityError()
-    }
-
-    return new InvalidDataError();
-  }
-}
 
 describe('RemoteUserRegister', () => {
   test('init does not request data from url', () => {
