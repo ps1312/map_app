@@ -9,8 +9,12 @@ class FetchHTTPClient {
     this.fetch = fetch
   }
 
-  async get(url: URL, params: Object): Promise<void> {
-    await this.fetch(url.toString(), params)
+  async get(url: URL, params: Object): Promise<Error> {
+    try {
+      await this.fetch(url.toString(), params)
+    } catch (error) {
+      return new Error()
+    }
   }
 }
 
@@ -33,6 +37,19 @@ describe('FetchHTTPClient', () => {
     expect(fetchSpy).toHaveBeenCalled()
     expect(fetchSpy).toHaveBeenCalledWith(url.toString(), params)
   });
+
+  test('delivers error on request failure', async () => {
+    const url = anyURL()
+    const params = anyUserRegisterModel()
+  
+    const sut = new FetchHTTPClient(fetchReject)
+
+    expect(await sut.get(url, params)).toStrictEqual(new Error());
+  });
+
+  function fetchReject(): Promise<Response> {
+    return new Promise((_, reject) => reject(new Error()))
+  }
 
   function anyURL(): URL {
     return new URL("http://any-url.com");
