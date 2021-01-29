@@ -1,7 +1,7 @@
 import { HTTPClient, HTTPClientResponse, HTTPClientResult } from "../RegisterAPI/HTTPClient";
 import { RemoteUserRegister } from "../RegisterAPI/RemoteUserRegister";
 import { NoConnectivityError, InvalidDataError } from "../RegisterAPI/SharedErrors";
-import { UserRegisterModel } from "../RegisterFeature/UserRegister";
+import { AuthenticatedUser, UserRegisterModel } from "../RegisterFeature/UserRegister";
 
 describe('RemoteUserRegister', () => {
   test('init does not request data from url', () => {
@@ -48,6 +48,19 @@ describe('RemoteUserRegister', () => {
     client.completeWithSuccess(200, "invalid response body")
     expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
   })
+
+  test('register delivers user with access token on 200 status code and valid response data', async () => {
+    const { sut, client } = makeSUT()
+    let params = anyUserRegisterModel()
+
+    let expectedResult: AuthenticatedUser = {
+      user: { id: 4, email: params.email },
+      token: "QpwL5tke4Pnpja7X4",
+    }
+
+    client.completeWithSuccess(200, "{\"id\":4,\"token\":\"QpwL5tke4Pnpja7X4\"}")
+    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(expectedResult);
+  });
 
   type SutTypes = { sut: RemoteUserRegister, client: HTTPClientSpy }
   function makeSUT(url: URL = anyURL()): SutTypes {

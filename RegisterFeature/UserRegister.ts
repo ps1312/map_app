@@ -3,12 +3,14 @@ export type UserRegisterModel = {
   password: string;
 }
 
-export type User = {}
-export type AuthenticationToken = {}
+export type User = {
+  id: number,
+  email: string,
+}
 
 export type AuthenticatedUser = {
   user: User;
-  token: AuthenticationToken;
+  token: string;
 }
 
 export interface UserRegister {
