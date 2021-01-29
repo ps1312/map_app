@@ -5,10 +5,13 @@ interface HTTPClient<T> {
 }
 
 class RemoteUserRegister {
-  constructor(private readonly client: HTTPClient<UserRegisterModel>) {}
+  constructor(
+    private readonly url: URL,
+    private readonly client: HTTPClient<UserRegisterModel>,
+    ) {}
 
-  register(url: URL, params: UserRegisterModel): void {
-    this.client.get(url, params)
+  register(params: UserRegisterModel): void {
+    this.client.get(this.url, params)
   }
 }
 
@@ -17,22 +20,22 @@ describe('RemoteUserRegister', () => {
     const { client } = makeSUT()
 
     expect(client.requests).toEqual([])
-  });
+  })
 
   test('register requests data from url with correct params', () => {
-    let url = anyURL()
-    const { sut, client } = makeSUT()
-    let params = anyUserRegisterModel()
+    const url = new URL("http://another-url.com")
+    const { sut, client } = makeSUT(url)
+    const params = anyUserRegisterModel()
   
-    sut.register(url, params)
+    sut.register(params)
 
     expect(client.requests[0]).toEqual({ url, params })
-  });
+  })
 
   type SutTypes = { sut: RemoteUserRegister, client: HTTPClientSpy }
-  function makeSUT(): SutTypes {
+  function makeSUT(url: URL = anyURL()): SutTypes {
     const client = new HTTPClientSpy()
-    const sut = new RemoteUserRegister(client)
+    const sut = new RemoteUserRegister(url, client)
 
     return { sut, client }
   }
