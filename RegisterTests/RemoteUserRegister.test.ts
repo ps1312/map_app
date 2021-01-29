@@ -1,7 +1,12 @@
 import { UserRegisterModel } from "../RegisterFeature/UserRegister";
 
 interface HTTPClient<T> {
-  get(url: URL, params: T): void;
+  get(url: URL, params: T): Promise<Error>;
+}
+
+class NoConnectivityError implements Error {
+  name: "No connectivity error";
+  message: "Error trying to access to network";
 }
 
 class RemoteUserRegister {
@@ -10,8 +15,9 @@ class RemoteUserRegister {
     private readonly client: HTTPClient<UserRegisterModel>,
     ) {}
 
-  register(params: UserRegisterModel): void {
-    this.client.get(this.url, params)
+  async register(params: UserRegisterModel): Promise<Error> {
+    await this.client.get(this.url, params)
+    return new NoConnectivityError()
   }
 }
 
@@ -30,6 +36,15 @@ describe('RemoteUserRegister', () => {
     sut.register(params)
 
     expect(client.requests[0]).toEqual({ url, params })
+  })
+
+  test('register delivers no connectivity error on no internet connection', async () => {
+    const { sut, client } = makeSUT()
+
+    client.completeWith(new Error());
+    const result = await sut.register(anyUserRegisterModel())
+
+    expect(result).toStrictEqual(new NoConnectivityError());
   })
 
   type SutTypes = { sut: RemoteUserRegister, client: HTTPClientSpy }
@@ -51,9 +66,15 @@ describe('RemoteUserRegister', () => {
 
   class HTTPClientSpy implements HTTPClient<UserRegisterModel> {
     requests: { url: URL, params: UserRegisterModel }[] = []
+    response: Error
 
-    get(url: URL, params: UserRegisterModel): void {
+    async get(url: URL, params: UserRegisterModel): Promise<Error> {
       this.requests.push({ url, params })
+      return this.response
+    }
+
+    completeWith(error: Error) {
+      this.response = error
     }
   }
 })
