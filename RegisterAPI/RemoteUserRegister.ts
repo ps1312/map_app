@@ -5,7 +5,7 @@ import { InvalidDataError, NoConnectivityError } from "./SharedErrors";
 export class RemoteUserRegister {
   constructor(
     private readonly url: URL,
-    private readonly client: HTTPClient<UserRegisterModel>,
+    private readonly client: HTTPClient,
     ) {}
 
   async register(params: UserRegisterModel): Promise<UserRegister.Result> {

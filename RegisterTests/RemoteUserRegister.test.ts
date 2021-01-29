@@ -78,7 +78,7 @@ describe('RemoteUserRegister', () => {
     return { email: 'any-email@mail.com', password: 'any-password' }
   }
 
-  class HTTPClientSpy implements HTTPClient<UserRegisterModel> {
+  class HTTPClientSpy implements HTTPClient {
     requests: { url: URL, params: UserRegisterModel }[] = []
     response: HTTPClientResult
 

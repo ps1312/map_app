@@ -10,6 +10,6 @@ export class HTTPClientResponse {
 
 export type HTTPClientResult = HTTPClientResponse | Error
 
-export interface HTTPClient<T> {
-  get(url: URL, params: T): Promise<HTTPClientResult>;
+export interface HTTPClient {
+  get(url: URL, params: Object): Promise<HTTPClientResult>;
 }
