@@ -1,4 +1,5 @@
 import 'whatwg-fetch'
+import { HTTPClient, HTTPClientResponse, HTTPClientResult } from '../RegisterAPI/HTTPClient';
 import { UserRegisterModel } from "../RegisterFeature/UserRegister";
 
 export class FetchHTTPError implements Error {
@@ -8,17 +9,18 @@ export class FetchHTTPError implements Error {
 
 type FetchSignature = { (input: RequestInfo, init?: RequestInit): Promise<Response> }
 
-class FetchHTTPClient {
+class FetchHTTPClient implements HTTPClient {
   fetch: FetchSignature
 
   constructor(fetch: FetchSignature) {
     this.fetch = fetch
   }
 
-  async get(url: URL, params: Object): Promise<Error> {
+  async get(url: URL, params: Object): Promise<HTTPClientResult> {
     try {
-      const response = await this.fetch(url.toString(), params)
-      await response.json()
+      const result = await this.fetch(url.toString(), params)
+      const responseBody = await result.json()
+      return new HTTPClientResponse(result.status, responseBody)
     } catch (error) {
       return new FetchHTTPError()
     }
@@ -49,7 +51,7 @@ describe('FetchHTTPClient', () => {
     const url = anyURL()
     const params = anyUserRegisterModel()
   
-    const sut = new FetchHTTPClient(fetchReject)
+    const sut = new FetchHTTPClient(fetchRejectStub)
 
     expect(await sut.get(url, params)).toStrictEqual(new FetchHTTPError());
   });
@@ -63,12 +65,29 @@ describe('FetchHTTPClient', () => {
     expect(await sut.get(url, params)).toStrictEqual(new FetchHTTPError());
   });
 
-  function fetchReject(): Promise<Response> {
+  test('delivers success response on 200 status code and valid json body', async () => {
+    const url = anyURL()
+    const params = anyUserRegisterModel()
+    const expectedResult = new HTTPClientResponse(200, { "any-key": "any-value" })
+
+    const sut = new FetchHTTPClient(fetchSuccessStub)
+    const result = await sut.get(url, params) as HTTPClientResponse
+
+    expect(result.statusCode).toStrictEqual(expectedResult.statusCode)
+    expect(result.body).toStrictEqual(expectedResult.body)
+  });
+
+  function fetchRejectStub(): Promise<Response> {
     return new Promise((_, reject) => reject(new Error()))
   }
 
   function fetchInvalidBodyStub(): Promise<Response> {
     return new Promise((resolve, _reject) => resolve(new Response("invalid json")))
+  }
+
+  function fetchSuccessStub(): Promise<Response> {
+    const response = new Response(JSON.stringify({ "any-key": "any-value" }), { status: 200 })
+    return new Promise((resolve, _reject) => resolve(response))
   }
 
   function anyURL(): URL {
