@@ -1,8 +1,13 @@
 import { HTTPClient, HTTPClientResponse, HTTPClientResult } from "./HTTPClient";
 
 export class FetchHTTPError implements Error {
-  name: "Invalid error on fetch";
-  message: "Fetch client couldn't complete with success";
+  name: string;
+  message: string;
+
+  constructor() {
+    this.name =  "Invalid error on fetch";
+    this.message = "Fetch client couldn't complete with success";
+  }
 }
 
 type FetchSignature = { (input: RequestInfo, init?: RequestInit): Promise<Response> }
