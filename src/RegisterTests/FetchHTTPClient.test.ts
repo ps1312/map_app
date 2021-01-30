@@ -1,4 +1,3 @@
-import 'whatwg-fetch'
 import { FetchHTTPClient, FetchHTTPError } from '../RegisterAPI/FetchHTTPClient';
 import { HTTPClientResponse } from '../RegisterAPI/HTTPClient';
 import { anyURL, anyUserRegisterModel, anyValidJSONBody } from './Helpers/SharedHelpers';
@@ -6,7 +5,7 @@ import { anyURL, anyUserRegisterModel, anyValidJSONBody } from './Helpers/Shared
 describe('FetchHTTPClient', () => {
   test('init does not send requests', () => {
     const fetchSpy = jest.fn()
-    const sut = new FetchHTTPClient(fetchSpy)
+    new FetchHTTPClient(fetchSpy)
 
     expect(fetchSpy).not.toHaveBeenCalled()
   });
