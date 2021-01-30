@@ -5,7 +5,7 @@ export class HTTPClientSpy implements HTTPClient {
   requests: { url: URL, params: UserRegisterModel }[] = []
   response?: HTTPClientResult
 
-  async get(url: URL, params: UserRegisterModel): Promise<HTTPClientResult> {
+  async post(url: URL, params: UserRegisterModel): Promise<HTTPClientResult> {
     this.requests.push({ url, params })
     return this.response!
   }

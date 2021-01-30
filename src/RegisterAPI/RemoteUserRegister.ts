@@ -9,7 +9,7 @@ export class RemoteUserRegister {
     ) {}
 
   async register(params: UserRegisterModel): Promise<UserRegister.Result> {
-    const response = await this.client.get(this.url, params)
+    const response = await this.client.post(this.url, params)
 
     if (response instanceof HTTPClientResponse) {
       const { statusCode, body } = response;
