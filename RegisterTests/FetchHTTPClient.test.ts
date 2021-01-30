@@ -68,7 +68,7 @@ describe('FetchHTTPClient', () => {
   test('delivers success response on 200 status code and valid json body', async () => {
     const url = anyURL()
     const params = anyUserRegisterModel()
-    const expectedResult = new HTTPClientResponse(200, { "any-key": "any-value" })
+    const expectedResult = new HTTPClientResponse(200, anyValidJSONBody())
 
     const sut = new FetchHTTPClient(fetchSuccessStub)
     const result = await sut.get(url, params) as HTTPClientResponse
@@ -86,8 +86,15 @@ describe('FetchHTTPClient', () => {
   }
 
   function fetchSuccessStub(): Promise<Response> {
-    const response = new Response(JSON.stringify({ "any-key": "any-value" }), { status: 200 })
-    return new Promise((resolve, _reject) => resolve(response))
+    return new Promise((resolve, _reject) => resolve(anySuccessResponse(anyValidJSONBody())))
+  }
+
+  function anyValidJSONBody(): any {
+    return { "any-key": "any-value" }
+  }
+
+  function anySuccessResponse(body: any): Response {
+    return new Response(JSON.stringify(body), { status: 200 })
   }
 
   function anyURL(): URL {
