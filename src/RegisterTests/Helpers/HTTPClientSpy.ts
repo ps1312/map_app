@@ -14,7 +14,7 @@ export class HTTPClientSpy implements HTTPClient {
     this.response = error
   }
 
-  completeWithSuccess(statusCode: number, body: string) {
+  completeWithSuccess(statusCode: number, body: any) {
     this.response = new HTTPClientResponse(statusCode, body);
   }
 }

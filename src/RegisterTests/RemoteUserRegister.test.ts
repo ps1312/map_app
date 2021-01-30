@@ -52,15 +52,18 @@ describe('RemoteUserRegister', () => {
 
   test('register delivers user with access token on 200 status code and valid response data', async () => {
     const { sut, client } = makeSUT()
-    let params = anyUserRegisterModel()
+    const params = anyUserRegisterModel()
 
-    let expectedResult: AuthenticatedUser = {
+    const expectedResult: AuthenticatedUser = {
       user: { id: 4, email: params.email },
       token: "QpwL5tke4Pnpja7X4",
     }
 
-    client.completeWithSuccess(200, "{\"id\":4,\"token\":\"QpwL5tke4Pnpja7X4\"}")
-    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(expectedResult);
+    client.completeWithSuccess(200, { id: 4, token : "QpwL5tke4Pnpja7X4" })
+    const result = await sut.register(anyUserRegisterModel()) as AuthenticatedUser
+
+    expect(result.user).toStrictEqual(expectedResult.user);
+    expect(result.token).toStrictEqual(expectedResult.token);
   });
 
   type SutTypes = { sut: RemoteUserRegister, client: HTTPClientSpy }

@@ -17,14 +17,13 @@ export class RemoteUserRegister {
       if (statusCode !== 200) {
         return new InvalidDataError();
       } else {
-        try {
-          let data = JSON.parse(body);
-          let authenticatedUser: AuthenticatedUser = {
-            user: { id: data['id'], email: params.email },
-            token: data['token'],
+        if (isResult(body)) {
+          const authenticatedUser: AuthenticatedUser = {
+            user: { id: body.id, email: params.email },
+            token: body.token,
           }
           return authenticatedUser
-        } catch {
+        } else {
           return new InvalidDataError();
         }
       }
@@ -32,4 +31,13 @@ export class RemoteUserRegister {
 
     return new NoConnectivityError()
   }
+}
+
+type ResultBody = {
+  id: number;
+  token: string;
+}
+
+function isResult(result: ResultBody): result is ResultBody {
+  return (result as ResultBody).id !== undefined;
 }
