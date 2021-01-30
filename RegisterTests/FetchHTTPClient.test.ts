@@ -48,30 +48,22 @@ describe('FetchHTTPClient', () => {
   });
 
   test('delivers error on request failure', async () => {
-    const url = anyURL()
-    const params = anyUserRegisterModel()
-  
     const sut = new FetchHTTPClient(fetchRejectStub)
 
-    expect(await sut.get(url, params)).toStrictEqual(new FetchHTTPError());
+    expect(await sut.get(anyURL(), anyUserRegisterModel())).toStrictEqual(new FetchHTTPError());
   });
 
   test('delivers invalid data error on invalid JSON body', async () => {
-    const url = anyURL()
-    const params = anyUserRegisterModel()
-  
     const sut = new FetchHTTPClient(fetchInvalidBodyStub)
 
-    expect(await sut.get(url, params)).toStrictEqual(new FetchHTTPError());
+    expect(await sut.get(anyURL(), anyUserRegisterModel())).toStrictEqual(new FetchHTTPError());
   });
 
   test('delivers success response on 200 status code and valid json body', async () => {
-    const url = anyURL()
-    const params = anyUserRegisterModel()
     const expectedResult = new HTTPClientResponse(200, anyValidJSONBody())
 
     const sut = new FetchHTTPClient(fetchSuccessStub)
-    const result = await sut.get(url, params) as HTTPClientResponse
+    const result = await sut.get(anyURL(), anyUserRegisterModel()) as HTTPClientResponse
 
     expect(result.statusCode).toStrictEqual(expectedResult.statusCode)
     expect(result.body).toStrictEqual(expectedResult.body)
