@@ -1,31 +1,7 @@
 import 'whatwg-fetch'
-import { HTTPClient, HTTPClientResponse, HTTPClientResult } from '../RegisterAPI/HTTPClient';
-import { UserRegisterModel } from "../RegisterFeature/UserRegister";
-
-export class FetchHTTPError implements Error {
-  name: "Invalid error on fetch";
-  message: "Fetch client couldn't complete with success";
-}
-
-type FetchSignature = { (input: RequestInfo, init?: RequestInit): Promise<Response> }
-
-class FetchHTTPClient implements HTTPClient {
-  fetch: FetchSignature
-
-  constructor(fetch: FetchSignature) {
-    this.fetch = fetch
-  }
-
-  async get(url: URL, params: Object): Promise<HTTPClientResult> {
-    try {
-      const result = await this.fetch(url.toString(), params)
-      const responseBody = await result.json()
-      return new HTTPClientResponse(result.status, responseBody)
-    } catch (error) {
-      return new FetchHTTPError()
-    }
-  }
-}
+import { FetchHTTPClient, FetchHTTPError } from '../RegisterAPI/FetchHTTPClient';
+import { HTTPClientResponse } from '../RegisterAPI/HTTPClient';
+import { anyURL, anyUserRegisterModel, anyValidJSONBody } from './Helpers/SharedHelpers';
 
 describe('FetchHTTPClient', () => {
   test('init does not send requests', () => {
@@ -81,19 +57,7 @@ describe('FetchHTTPClient', () => {
     return new Promise((resolve, _reject) => resolve(anySuccessResponse(anyValidJSONBody())))
   }
 
-  function anyValidJSONBody(): any {
-    return { "any-key": "any-value" }
-  }
-
   function anySuccessResponse(body: any): Response {
     return new Response(JSON.stringify(body), { status: 200 })
-  }
-
-  function anyURL(): URL {
-    return new URL("http://any-url.com");
-  }
-
-  function anyUserRegisterModel(): UserRegisterModel {
-    return { email: 'any-email@mail.com', password: 'any-password' }
   }
 })

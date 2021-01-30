@@ -1,7 +1,8 @@
-import { HTTPClient, HTTPClientResponse, HTTPClientResult } from "../RegisterAPI/HTTPClient";
 import { RemoteUserRegister } from "../RegisterAPI/RemoteUserRegister";
 import { NoConnectivityError, InvalidDataError } from "../RegisterAPI/SharedErrors";
-import { AuthenticatedUser, UserRegisterModel } from "../RegisterFeature/UserRegister";
+import { AuthenticatedUser } from "../RegisterFeature/UserRegister";
+import { HTTPClientSpy } from "./Helpers/HTTPClientSpy";
+import { anyUserRegisterModel, anyURL } from "./Helpers/SharedHelpers";
 
 describe('RemoteUserRegister', () => {
   test('init does not request data from url', () => {
@@ -68,31 +69,5 @@ describe('RemoteUserRegister', () => {
     const sut = new RemoteUserRegister(url, client)
 
     return { sut, client }
-  }
-
-  function anyURL(): URL {
-    return new URL("http://any-url.com");
-  }
-
-  function anyUserRegisterModel(): UserRegisterModel {
-    return { email: 'any-email@mail.com', password: 'any-password' }
-  }
-
-  class HTTPClientSpy implements HTTPClient {
-    requests: { url: URL, params: UserRegisterModel }[] = []
-    response: HTTPClientResult
-
-    async get(url: URL, params: UserRegisterModel): Promise<HTTPClientResult> {
-      this.requests.push({ url, params })
-      return this.response
-    }
-
-    completeWith(error: Error) {
-      this.response = error
-    }
-
-    completeWithSuccess(statusCode: number, body: string) {
-      this.response = new HTTPClientResponse(statusCode, body);
-    }
   }
 })
