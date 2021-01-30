@@ -1,4 +1,10 @@
+import 'whatwg-fetch'
 import { UserRegisterModel } from "../RegisterFeature/UserRegister";
+
+export class FetchHTTPError implements Error {
+  name: "Invalid error on fetch";
+  message: "Fetch client couldn't complete with success";
+}
 
 type FetchSignature = { (input: RequestInfo, init?: RequestInit): Promise<Response> }
 
@@ -11,9 +17,10 @@ class FetchHTTPClient {
 
   async get(url: URL, params: Object): Promise<Error> {
     try {
-      await this.fetch(url.toString(), params)
+      const response = await this.fetch(url.toString(), params)
+      await response.json()
     } catch (error) {
-      return new Error()
+      return new FetchHTTPError()
     }
   }
 }
@@ -44,11 +51,24 @@ describe('FetchHTTPClient', () => {
   
     const sut = new FetchHTTPClient(fetchReject)
 
-    expect(await sut.get(url, params)).toStrictEqual(new Error());
+    expect(await sut.get(url, params)).toStrictEqual(new FetchHTTPError());
+  });
+
+  test('delivers invalid data error on invalid JSON body', async () => {
+    const url = anyURL()
+    const params = anyUserRegisterModel()
+  
+    const sut = new FetchHTTPClient(fetchInvalidBodyStub)
+
+    expect(await sut.get(url, params)).toStrictEqual(new FetchHTTPError());
   });
 
   function fetchReject(): Promise<Response> {
     return new Promise((_, reject) => reject(new Error()))
+  }
+
+  function fetchInvalidBodyStub(): Promise<Response> {
+    return new Promise((resolve, _reject) => resolve(new Response("invalid json")))
   }
 
   function anyURL(): URL {
