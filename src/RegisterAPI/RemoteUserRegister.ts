@@ -1,4 +1,4 @@
-import { UserRegister, AuthenticatedUser, UserRegisterModel } from "../RegisterFeature/UserRegister";
+import { UserRegisterResult, AuthenticatedUser, UserRegisterModel } from "../RegisterFeature/UserRegister";
 import { HTTPClient, HTTPClientResponse } from "./HTTPClient";
 import { InvalidDataError, NoConnectivityError } from "./SharedErrors";
 
@@ -8,7 +8,7 @@ export class RemoteUserRegister {
     private readonly client: HTTPClient,
     ) {}
 
-  async register(params: UserRegisterModel): Promise<UserRegister.Result> {
+  async register(params: UserRegisterModel): Promise<UserRegisterResult> {
     const response = await this.client.post(this.url, params)
 
     if (response instanceof HTTPClientResponse) {

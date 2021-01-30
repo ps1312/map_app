@@ -17,6 +17,4 @@ export interface UserRegister {
   register(userRegisterModel: UserRegisterModel): AuthenticatedUser;
 }
 
-export namespace UserRegister {
-  export type Result = AuthenticatedUser | Error
-}
+export type UserRegisterResult = AuthenticatedUser | Error
