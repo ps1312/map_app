@@ -1,5 +1,5 @@
-import { FetchHTTPClient, FetchHTTPError } from '../RegisterAPI/FetchHTTPClient';
-import { HTTPClientResponse } from '../RegisterAPI/HTTPClient';
+import { FetchHTTPClient, FetchHTTPError } from '../../RegisterAPI/FetchHTTPClient';
+import { HTTPClientResponse } from '../../RegisterAPI/HTTPClient';
 import { anyURL, anyUserRegisterModel, anyValidJSONBody } from './Helpers/SharedHelpers';
 
 describe('FetchHTTPClient', () => {

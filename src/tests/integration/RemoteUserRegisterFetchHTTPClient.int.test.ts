@@ -1,6 +1,6 @@
-import { FetchHTTPClient } from "../RegisterAPI/FetchHTTPClient"
-import { RemoteUserRegister } from "../RegisterAPI/RemoteUserRegister"
-import { AuthenticatedUser, UserRegisterResult, UserRegisterModel } from "../RegisterFeature/UserRegister"
+import { FetchHTTPClient } from "../../RegisterAPI/FetchHTTPClient"
+import { RemoteUserRegister } from "../../RegisterAPI/RemoteUserRegister"
+import { AuthenticatedUser, UserRegisterResult, UserRegisterModel } from "../../RegisterFeature/UserRegister"
 
 describe('End to end API call to test RemoteUserRegister and FetchHTTPClient', () => {
   test('delivers correct fixed data on request to REQ|RES server', async () => {
