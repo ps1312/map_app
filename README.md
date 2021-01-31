@@ -116,21 +116,79 @@ Given the user is logged in
 
 #### Create Account Use Case
 
-### Data:
+#### Data:
 - URL
 - Username
 - Email
 - Password
 - Password Confirmation
 
-### Primary Course (happy path)
+#### Primary Course (happy path)
 1. Execute `Create Account` with above data
 2. System makes request to server
 3. System receives response with account data and an access token
 4. System validates received data
 
-### No connectivity - error course (sad path)
+#### No connectivity - error course (sad path)
 1. System delivers connectivity error
 
-### Invalid data - error course (sad path)
+#### Invalid data - error course (sad path)
 1. System delivers invalid data error
+
+---
+
+#### Login Account Use Case
+
+#### Data:
+- URL
+- Username
+- Password
+
+#### Primary Course (happy path)
+1. Execute `Load Account` with above data
+2. System makes request to server
+3. System receives response with account data and an access token
+4. System validates received data
+
+#### No connectivity - error course (sad path)
+1. System delivers connectivity error
+
+#### Invalid data - error course (sad path)
+1. System delivers invalid data error
+
+---
+
+#### Get Nearby Places Use Case
+
+#### Data:
+- URL
+- Latitude
+- Longitude
+- GoogleAPIKey
+
+#### Primary Course (happy path)
+1. Execute `Load Nearby Places` with above data
+2. System makes request to Google Maps API
+3. System receives response with list of nearby places
+4. System displays places to user
+
+#### No connectivity - error course (sad path)
+1. System delivers connectivity error
+
+---
+
+#### Save Favourite Place Use Case
+
+#### Data:
+- ID
+- Name
+- Vicinity
+- Coordinates
+- PhotoURL
+
+#### Primary Course (happy path)
+1. Execute `Save Local` with above data
+2. System add local do stored locals in cache
+
+#### Cache did not save - error course (sad path)
+1. System delivers can not save error
