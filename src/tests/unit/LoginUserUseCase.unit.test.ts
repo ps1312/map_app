@@ -1,4 +1,5 @@
 import { HTTPClient } from "../../RegisterAPI/HTTPClient"
+import { NoConnectivityError } from "../../RegisterAPI/SharedErrors"
 import { UserRegisterModel } from "../../RegisterFeature/UserRegister"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL } from "./Helpers/SharedHelpers"
@@ -9,8 +10,9 @@ class RemoteUserLogin {
     private readonly client: HTTPClient,
     ) {}
 
-  async login(credentials: UserRegisterModel): Promise<void> {
+  async login(credentials: UserRegisterModel): Promise<Error> {
     await this.client.post(this.url, credentials)
+    return new NoConnectivityError();
   }
 }
 
@@ -30,6 +32,16 @@ describe('RemoteUserLogin', () => {
 
     expect(client.requests[0]).toEqual({ url, params })
   })
+
+  test('login delivers connectivity error when client fails', async () => {
+    const [sut, client] = makeSUT()
+    const params = anyUserLoginModel()
+
+    client.completeWith(new Error())
+    const result = await sut.login(params)
+
+    expect(result).toStrictEqual(new NoConnectivityError())
+  });
 
   function makeSUT(url: URL = anyURL()): [RemoteUserLogin, HTTPClientSpy] {
     const client = new HTTPClientSpy()
