@@ -1,38 +1,8 @@
-import { HTTPClient, HTTPClientResponse } from "../../RegisterAPI/HTTPClient"
+import { RemoteUserLogin } from "../../LoginAPI/RemoteUserLogin"
 import { InvalidDataError, NoConnectivityError } from "../../RegisterAPI/SharedErrors"
-import { AuthenticationToken, UserLoginResult, UserRegisterModel } from "../../RegisterFeature/UserRegister"
+import { AuthenticationToken } from "../../RegisterFeature/UserRegister"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL } from "./Helpers/SharedHelpers"
-
-class RemoteUserLogin {
-  constructor(
-    private readonly url: URL,
-    private readonly client: HTTPClient,
-    ) {}
-
-  async login(credentials: UserRegisterModel): Promise<UserLoginResult> {
-    const result = await this.client.post(this.url, credentials)
-
-    if (result instanceof HTTPClientResponse) {
-      const { statusCode, body } = result
-
-      if (statusCode === 200 && isResult(body)) {
-        return body
-      }
-      return new InvalidDataError()
-    }
-
-    return new NoConnectivityError();
-  }
-}
-
-type ResultBody = {
-  token: string;
-}
-
-function isResult(result: ResultBody): result is ResultBody {
-  return (result as ResultBody).token !== undefined;
-}
 
 describe('RemoteUserLogin', () => {
   test('init does not make requests', () => {
