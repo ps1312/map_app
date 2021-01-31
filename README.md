@@ -1,5 +1,6 @@
-### BDD Specs:
+[![Build Status](https://travis-ci.com/ps1312/map_app.svg?branch=main)](https://travis-ci.com/ps1312/map_app)
 
+### BDD Specs:
 
 #### Narrative #1:
 ```
