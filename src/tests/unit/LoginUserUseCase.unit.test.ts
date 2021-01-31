@@ -62,6 +62,13 @@ describe('RemoteUserLogin', () => {
     expect(await sut.login(params)).toStrictEqual(new InvalidDataError())
   })
 
+  test('login delivers invalid data error on 200 with invalid json', async () => {
+    const [sut, client] = makeSUT()
+
+    client.completeWithSuccess(200, "invalid json body")
+    expect(await sut.login(anyUserLoginModel())).toStrictEqual(new InvalidDataError())
+  })
+
   function makeSUT(url: URL = anyURL()): [RemoteUserLogin, HTTPClientSpy] {
     const client = new HTTPClientSpy()
     const sut = new RemoteUserLogin(url, client)
