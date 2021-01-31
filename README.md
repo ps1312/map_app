@@ -115,7 +115,7 @@ Given the user is logged in
 
 ### Use Cases:
 
-#### Create Account Use Case
+#### Register User Use Case
 
 #### Data:
 - URL
