@@ -1,6 +1,6 @@
-import { RemoteUserLogin } from "../../LoginAPI/RemoteUserLogin"
-import { InvalidDataError, NoConnectivityError } from "../../RegisterAPI/SharedErrors"
-import { AuthenticationToken } from "../../RegisterFeature/UserRegister"
+import { RemoteUserLogin } from "../../services/login/RemoteUserLogin"
+import { InvalidDataError, NoConnectivityError } from "../../services/errors"
+import { AuthenticationToken } from "../../models/UserAuthentication"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL } from "./Helpers/SharedHelpers"
 

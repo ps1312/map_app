@@ -1,6 +1,6 @@
-import { RemoteUserLogin } from "../../LoginAPI/RemoteUserLogin"
-import { FetchHTTPClient } from "../../RegisterAPI/FetchHTTPClient"
-import { UserRegisterModel, AuthenticationToken } from "../../RegisterFeature/UserRegister"
+import { RemoteUserLogin } from "../../services/login/RemoteUserLogin"
+import { FetchHTTPClient } from "../../services/http/FetchHTTPClient"
+import { UserRegisterModel, AuthenticationToken } from "../../models/UserAuthentication"
 
 describe('End to end API call to test RemoteUserLogin and FetchHTTPClient', () => {
   test('delivers correct fixed data on request to REQ|RES server on login', async () => {
