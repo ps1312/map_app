@@ -16,6 +16,7 @@ describe('RemoteUserLogin', () => {
     const [sut, client] = makeSUT(url)
     const params = anyUserLoginModel()
 
+    client.completeWithSuccess(200, { token: "QpwL5tke4Pnpja7X4" })
     await sut.login(params)
 
     expect(client.requests[0]).toEqual({ url, params })
@@ -26,9 +27,9 @@ describe('RemoteUserLogin', () => {
     const params = anyUserLoginModel()
 
     client.completeWith(new Error())
-    const result = await sut.login(params)
+    const promise = sut.login(params)
 
-    expect(result).toStrictEqual(new NoConnectivityError())
+    await expect(promise).rejects.toEqual(new NoConnectivityError())
   });
 
   test('login delivers invalid data error on non 200 status code', async () => {
@@ -36,20 +37,20 @@ describe('RemoteUserLogin', () => {
     const params = anyUserLoginModel()
 
     client.completeWithSuccess(199, {})
-    expect(await sut.login(params)).toStrictEqual(new InvalidDataError())
+    await expect(sut.login(params)).rejects.toEqual(new InvalidDataError())
 
     client.completeWithSuccess(201, {})
-    expect(await sut.login(params)).toStrictEqual(new InvalidDataError())
+    await expect(sut.login(params)).rejects.toEqual(new InvalidDataError())
 
     client.completeWithSuccess(300, {})
-    expect(await sut.login(params)).toStrictEqual(new InvalidDataError())
+    await expect(sut.login(params)).rejects.toEqual(new InvalidDataError())
   })
 
   test('login delivers invalid data error on 200 with invalid json', async () => {
     const [sut, client] = makeSUT()
 
     client.completeWithSuccess(200, "invalid json body")
-    expect(await sut.login(anyUserLoginModel())).toStrictEqual(new InvalidDataError())
+    await expect(sut.login(anyUserLoginModel())).rejects.toEqual(new InvalidDataError())
   })
 
   test('login delivers logged in user with access token on 200 status code and valid json body', async () => {

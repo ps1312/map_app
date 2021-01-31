@@ -15,7 +15,7 @@ export class RemoteUserLogin {
       return UserLoginMapper.map(result)
     }
 
-    return new NoConnectivityError();
+    throw new NoConnectivityError();
   }
 }
 
@@ -26,7 +26,8 @@ class UserLoginMapper {
     if (statusCode === 200 && isResult(body)) {
       return body
     }
-    return new InvalidDataError()
+
+    throw new InvalidDataError()
   }
 }
 

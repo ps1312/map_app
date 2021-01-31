@@ -30,7 +30,7 @@ export class FetchHTTPClient implements HTTPClient {
       const responseBody = await result.json()
       return new HTTPClientResponse(result.status, responseBody)
     } catch (error) {
-      return new FetchHTTPError()
+      throw new FetchHTTPError()
     }
   }
 }

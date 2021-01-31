@@ -15,7 +15,7 @@ export class RemoteUserRegister implements UserRegister {
       return RemoteUserMapper.map(response, params.email)
     }
 
-    return new NoConnectivityError()
+    throw new NoConnectivityError()
   }
 }
 
@@ -24,7 +24,7 @@ class RemoteUserMapper {
     const { statusCode, body } = response;
 
       if (statusCode !== 200 || !isResult(body)) {
-        return new InvalidDataError();
+        throw new InvalidDataError();
       } else {
         return {
           user: { id: body.id, email: email }, 
