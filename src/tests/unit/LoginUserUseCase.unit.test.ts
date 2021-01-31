@@ -1,5 +1,5 @@
-import { HTTPClient } from "../../RegisterAPI/HTTPClient"
-import { NoConnectivityError } from "../../RegisterAPI/SharedErrors"
+import { HTTPClient, HTTPClientResponse } from "../../RegisterAPI/HTTPClient"
+import { InvalidDataError, NoConnectivityError } from "../../RegisterAPI/SharedErrors"
 import { UserRegisterModel } from "../../RegisterFeature/UserRegister"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL } from "./Helpers/SharedHelpers"
@@ -11,7 +11,12 @@ class RemoteUserLogin {
     ) {}
 
   async login(credentials: UserRegisterModel): Promise<Error> {
-    await this.client.post(this.url, credentials)
+    const result = await this.client.post(this.url, credentials)
+
+    if (result instanceof HTTPClientResponse) {
+      return new InvalidDataError()
+    }
+
     return new NoConnectivityError();
   }
 }
@@ -42,6 +47,20 @@ describe('RemoteUserLogin', () => {
 
     expect(result).toStrictEqual(new NoConnectivityError())
   });
+
+  test('login delivers invalid data error on non 200 status code', async () => {
+    const [sut, client] = makeSUT()
+    const params = anyUserLoginModel()
+
+    client.completeWithSuccess(199, {})
+    expect(await sut.login(params)).toStrictEqual(new InvalidDataError())
+
+    client.completeWithSuccess(201, {})
+    expect(await sut.login(params)).toStrictEqual(new InvalidDataError())
+
+    client.completeWithSuccess(300, {})
+    expect(await sut.login(params)).toStrictEqual(new InvalidDataError())
+  })
 
   function makeSUT(url: URL = anyURL()): [RemoteUserLogin, HTTPClientSpy] {
     const client = new HTTPClientSpy()
