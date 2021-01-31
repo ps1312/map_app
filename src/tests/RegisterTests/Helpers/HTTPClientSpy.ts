@@ -1,5 +1,5 @@
-import { HTTPClient, HTTPClientResult, HTTPClientResponse } from "../../RegisterAPI/HTTPClient"
-import { UserRegisterModel } from "../../RegisterFeature/UserRegister"
+import { HTTPClient, HTTPClientResult, HTTPClientResponse } from "../../../RegisterAPI/HTTPClient"
+import { UserRegisterModel } from "../../../RegisterFeature/UserRegister"
 
 export class HTTPClientSpy implements HTTPClient {
   requests: { url: URL, params: UserRegisterModel }[] = []

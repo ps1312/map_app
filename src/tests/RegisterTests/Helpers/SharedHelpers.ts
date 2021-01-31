@@ -1,4 +1,4 @@
-import { UserRegisterModel } from "../../RegisterFeature/UserRegister";
+import { UserRegisterModel } from "../../../RegisterFeature/UserRegister";
 
 export function anyValidJSONBody(): any {
   return { "any-key": "any-value" }

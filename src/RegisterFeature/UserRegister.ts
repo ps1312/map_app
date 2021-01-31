@@ -14,7 +14,7 @@ export type AuthenticatedUser = {
 }
 
 export interface UserRegister {
-  register(userRegisterModel: UserRegisterModel): AuthenticatedUser;
+  register(userRegisterModel: UserRegisterModel): Promise<UserRegisterResult>;
 }
 
 export type UserRegisterResult = AuthenticatedUser | Error
