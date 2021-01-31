@@ -1,6 +1,6 @@
 import { HTTPClient, HTTPClientResponse } from "../../RegisterAPI/HTTPClient"
 import { InvalidDataError, NoConnectivityError } from "../../RegisterAPI/SharedErrors"
-import { UserRegisterModel } from "../../RegisterFeature/UserRegister"
+import { AuthenticationToken, UserLoginResult, UserRegisterModel } from "../../RegisterFeature/UserRegister"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL } from "./Helpers/SharedHelpers"
 
@@ -10,15 +10,28 @@ class RemoteUserLogin {
     private readonly client: HTTPClient,
     ) {}
 
-  async login(credentials: UserRegisterModel): Promise<Error> {
+  async login(credentials: UserRegisterModel): Promise<UserLoginResult> {
     const result = await this.client.post(this.url, credentials)
 
     if (result instanceof HTTPClientResponse) {
+      const { statusCode, body } = result
+
+      if (statusCode === 200 && isResult(body)) {
+        return body
+      }
       return new InvalidDataError()
     }
 
     return new NoConnectivityError();
   }
+}
+
+type ResultBody = {
+  token: string;
+}
+
+function isResult(result: ResultBody): result is ResultBody {
+  return (result as ResultBody).token !== undefined;
 }
 
 describe('RemoteUserLogin', () => {
@@ -69,6 +82,19 @@ describe('RemoteUserLogin', () => {
     expect(await sut.login(anyUserLoginModel())).toStrictEqual(new InvalidDataError())
   })
 
+  test('login delivers logged in user with access token on 200 status code and valid json body', async () => {
+    const [sut, client] = makeSUT()
+
+    const expectedResult: AuthenticationToken = {
+      token: "QpwL5tke4Pnpja7X4",
+    }
+
+    client.completeWithSuccess(200, expectedResult)
+    const result = await sut.login(anyUserLoginModel()) as AuthenticationToken
+
+    expect(result.token).toStrictEqual(expectedResult.token)
+  })
+
   function makeSUT(url: URL = anyURL()): [RemoteUserLogin, HTTPClientSpy] {
     const client = new HTTPClientSpy()
     const sut = new RemoteUserLogin(url, client)
@@ -80,5 +106,3 @@ describe('RemoteUserLogin', () => {
     return { email: "eve.holt@reqres.in", password: "cityslicka" }
   }
 })
-
-export {}
