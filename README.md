@@ -1,46 +1,136 @@
-# Getting Started with Create React App
+### BDD Specs:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+#### Narrative #1:
+```
+As a guest
+I want to create an account
+So that i can use the app
+```
 
-In the project directory, you can run:
+#### Scenarios (Acceptance criteria):
+```
+Given the guest has internet connection
+ When the guest submits the Create Account formulary
+  And the app should receive an access token
+```
 
-### `yarn start`
+```
+Given the guest has no internet connection
+ When the guest submits the Create Account formulary
+ Then the app should display an error message
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### Narrative #2:
+```
+As a user
+I want to login to my account
+So that i can access the app features
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+#### Scenarios (Acceptance criteria):
+```
+Given the user has internet connection
+ When the user submits the Login formulary
+ Then the app should redirect to a secured screen
+```
 
-### `yarn test`
+```
+Given the guest has no internet connection
+ When the user submits the Login formulary
+ Then the app should display an error message
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Narrative #3:
+```
+As a user
+I want to see locals close to me as a map
+So that i can know where i live
+```
 
-### `yarn build`
+#### Scenarios (Acceptance criteria):
+```
+Given the user is on the map screen
+ When the user agrees to share location
+ Then the app should display close locals on the map
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Narrative #4:
+```
+As a user
+I want to see locals close to me as a list
+So that i can know where i live
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Scenarios (Acceptance criteria):
+```
+Given the user is on the map screen
+ When the user agrees to share location
+ Then the app should display close locals on the list
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Narrative #5:
+```
+As a user
+I want to favourite a close place
+So that i can rate the place
+```
 
-### `yarn eject`
+#### Scenarios (Acceptance criteria):
+```
+Given the user is seeing close locals
+ When the user click on the star button
+  And complete formulary with comment and rating
+ Then the app should save the favourite place
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### Narrative #6:
+```
+As a user
+I want to edit my profile
+So that i can update it with my current informations
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### Scenarios (Acceptance criteria):
+```
+Given the user is on profile page
+ And edit their information
+ Then the app should update the profile
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+#### Narrative #7:
+```
+As a user
+I want to logout from my account
+So that i can exit the application
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+#### Scenarios (Acceptance criteria):
+```
+Given the user is logged in
+ When the user clicks on logout
+ Then the app logout user
+```
 
-## Learn More
+### Use Cases:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### Create Account Use Case
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Data:
+- URL
+- Username
+- Email
+- Password
+- Password Confirmation
+
+### Primary Course (happy path)
+1. Execute `Create Account` with above data
+2. System makes request to server
+3. System receives response with account data and an access token
+4. System validates received data
+
+### No connectivity - error course (sad path)
+1. System delivers connectivity error
+
+### Invalid data - error course (sad path)
+1. System delivers invalid data error
