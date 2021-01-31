@@ -1,6 +1,6 @@
 import { RemoteUserRegister } from "../../services/register/RemoteUserRegister";
 import { NoConnectivityError, InvalidDataError } from "../../services/errors";
-import { AuthenticatedUser } from "../../models/UserAuthentication";
+import { AuthenticatedUser } from "../../models/UserRegister";
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy";
 import { anyUserRegisterModel, anyURL } from "./Helpers/SharedHelpers";
 
@@ -11,12 +11,13 @@ describe('RemoteUserRegister', () => {
     expect(client.requests).toEqual([])
   })
 
-  test('register requests data from url with correct params', () => {
+  test('register requests data from url with correct params', async () => {
     const url = new URL("http://another-url.com")
     const { sut, client } = makeSUT(url)
     const params = anyUserRegisterModel()
-  
-    sut.register(params)
+
+    client.completeWithSuccess(200, { id: 4, token : "QpwL5tke4Pnpja7X4" })
+    await sut.register(params)
 
     expect(client.requests[0]).toEqual({ url, params })
   })
@@ -25,29 +26,29 @@ describe('RemoteUserRegister', () => {
     const { sut, client } = makeSUT()
 
     client.completeWith(new Error());
-    const result = await sut.register(anyUserRegisterModel())
+    const result = sut.register(anyUserRegisterModel())
 
-    expect(result).toStrictEqual(new NoConnectivityError());
+    await expect(result).rejects.toEqual(new NoConnectivityError());
   })
 
   test('register delivers invalid data error on non 200 status code', async () => {
     const { sut, client } = makeSUT()
 
     client.completeWithSuccess(199, "");
-    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
+    await expect(sut.register(anyUserRegisterModel())).rejects.toEqual(new InvalidDataError());
 
     client.completeWithSuccess(201, "");
-    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
+    await expect(sut.register(anyUserRegisterModel())).rejects.toEqual(new InvalidDataError());
 
     client.completeWithSuccess(300, "");
-    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
+    await expect(sut.register(anyUserRegisterModel())).rejects.toEqual(new InvalidDataError());
   })
 
   test('register delivers invalid data error on invalid response body', async () => {
     const { sut, client } = makeSUT()
 
     client.completeWithSuccess(200, "invalid response body")
-    expect(await sut.register(anyUserRegisterModel())).toStrictEqual(new InvalidDataError());
+    await expect(sut.register(anyUserRegisterModel())).rejects.toEqual(new InvalidDataError());
   })
 
   test('register delivers user with access token on 200 status code and valid response data', async () => {
