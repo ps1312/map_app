@@ -1,6 +1,6 @@
 import { HTTPClient, HTTPClientResponse } from "../http/HTTPClient";
 import { InvalidDataError, NoConnectivityError } from "../errors";
-import { UserLoginResult, UserRegisterModel } from "../../models/UserAuthentication";
+import { UserLoginResult, UserLoginModel } from "../../models/UserLogin";
 
 export class RemoteUserLogin {
   constructor(
@@ -8,7 +8,7 @@ export class RemoteUserLogin {
     private readonly client: HTTPClient,
     ) {}
 
-  async login(credentials: UserRegisterModel): Promise<UserLoginResult> {
+  async login(credentials: UserLoginModel): Promise<UserLoginResult> {
     const result = await this.client.post(this.url, credentials)
 
     if (result instanceof HTTPClientResponse) {
@@ -31,10 +31,10 @@ class UserLoginMapper {
   }
 }
 
-type ResultBody = {
+type LoginResultBody = {
   token: string;
 }
 
-function isResult(result: ResultBody): result is ResultBody {
-  return (result as ResultBody).token !== undefined;
+function isResult(result: LoginResultBody): result is LoginResultBody {
+  return (result as LoginResultBody).token !== undefined;
 }

@@ -1,6 +1,6 @@
 import { RemoteUserLogin } from "../../services/login/RemoteUserLogin"
 import { InvalidDataError, NoConnectivityError } from "../../services/errors"
-import { AuthenticationToken } from "../../models/UserAuthentication"
+import { AuthenticationToken } from "../../models/AuthenticationToken"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL } from "./Helpers/SharedHelpers"
 
@@ -16,7 +16,7 @@ describe('RemoteUserLogin', () => {
     const [sut, client] = makeSUT(url)
     const params = anyUserLoginModel()
 
-    client.completeWithSuccess(200, { token: "QpwL5tke4Pnpja7X4" })
+    client.completeWithSuccess(200, anyLoginSuccessResult())
     await sut.login(params)
 
     expect(client.requests[0]).toEqual({ url, params })
@@ -56,9 +56,7 @@ describe('RemoteUserLogin', () => {
   test('login delivers logged in user with access token on 200 status code and valid json body', async () => {
     const [sut, client] = makeSUT()
 
-    const expectedResult: AuthenticationToken = {
-      token: "QpwL5tke4Pnpja7X4",
-    }
+    const expectedResult = anyLoginSuccessResult()
 
     client.completeWithSuccess(200, expectedResult)
     const result = await sut.login(anyUserLoginModel()) as AuthenticationToken
@@ -75,5 +73,9 @@ describe('RemoteUserLogin', () => {
 
   function anyUserLoginModel() {
     return { email: "eve.holt@reqres.in", password: "cityslicka" }
+  }
+
+  function anyLoginSuccessResult(): AuthenticationToken {
+    return { token: "QpwL5tke4Pnpja7X4" }
   }
 })

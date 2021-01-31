@@ -1,6 +1,6 @@
 import { RemoteUserRegister } from "../../services/register/RemoteUserRegister";
 import { NoConnectivityError, InvalidDataError } from "../../services/errors";
-import { AuthenticatedUser } from "../../models/UserAuthentication";
+import { AuthenticatedUser } from "../../models/UserRegister";
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy";
 import { anyUserRegisterModel, anyURL } from "./Helpers/SharedHelpers";
 
@@ -11,7 +11,7 @@ describe('RemoteUserRegister', () => {
     expect(client.requests).toEqual([])
   })
 
-  test.only('register requests data from url with correct params', async () => {
+  test('register requests data from url with correct params', async () => {
     const url = new URL("http://another-url.com")
     const { sut, client } = makeSUT(url)
     const params = anyUserRegisterModel()

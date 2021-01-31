@@ -1,4 +1,4 @@
-import { UserRegisterResult, UserRegisterModel, UserRegister } from "../../models/UserAuthentication";
+import { UserRegisterResult, UserRegisterModel, UserRegister } from "../../models/UserRegister";
 import { HTTPClient, HTTPClientResponse } from "../http/HTTPClient";
 import { InvalidDataError, NoConnectivityError } from "../errors";
 
@@ -34,11 +34,11 @@ class RemoteUserMapper {
   }
 }
 
-type ResultBody = {
+type RegisterResultBody = {
   id: number;
   token: string;
 }
 
-function isResult(result: ResultBody): result is ResultBody {
-  return (result as ResultBody).id !== undefined;
+function isResult(result: RegisterResultBody): result is RegisterResultBody {
+  return (result as RegisterResultBody).id !== undefined;
 }
