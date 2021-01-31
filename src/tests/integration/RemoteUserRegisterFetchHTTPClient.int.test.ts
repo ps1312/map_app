@@ -1,9 +1,9 @@
-import { FetchHTTPClient } from "../../RegisterAPI/FetchHTTPClient"
-import { RemoteUserRegister } from "../../RegisterAPI/RemoteUserRegister"
-import { AuthenticatedUser, UserRegisterResult, UserRegisterModel } from "../../RegisterFeature/UserRegister"
+import { FetchHTTPClient } from "../../services/http/FetchHTTPClient"
+import { RemoteUserRegister } from "../../services/register/RemoteUserRegister"
+import { AuthenticatedUser, UserRegisterResult, UserRegisterModel } from "../../models/UserAuthentication"
 
 describe('End to end API call to test RemoteUserRegister and FetchHTTPClient', () => {
-  test('delivers correct fixed data on request to REQ|RES server', async () => {
+  test('delivers correct fixed data on request to REQ|RES server on register', async () => {
     const client = new FetchHTTPClient(fetch)
     const sut = new RemoteUserRegister(expectedURL(), client)
     const registerModel = expectedUserRegisterModel()

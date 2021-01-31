@@ -1,6 +1,6 @@
-import { UserRegisterResult, UserRegisterModel, UserRegister } from "../RegisterFeature/UserRegister";
-import { HTTPClient, HTTPClientResponse } from "./HTTPClient";
-import { InvalidDataError, NoConnectivityError } from "./SharedErrors";
+import { UserRegisterResult, UserRegisterModel, UserRegister } from "../../models/UserAuthentication";
+import { HTTPClient, HTTPClientResponse } from "../http/HTTPClient";
+import { InvalidDataError, NoConnectivityError } from "../errors";
 
 export class RemoteUserRegister implements UserRegister {
   constructor(

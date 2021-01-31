@@ -1,6 +1,6 @@
-import { RemoteUserRegister } from "../../RegisterAPI/RemoteUserRegister";
-import { NoConnectivityError, InvalidDataError } from "../../RegisterAPI/SharedErrors";
-import { AuthenticatedUser } from "../../RegisterFeature/UserRegister";
+import { RemoteUserRegister } from "../../services/register/RemoteUserRegister";
+import { NoConnectivityError, InvalidDataError } from "../../services/errors";
+import { AuthenticatedUser } from "../../models/UserAuthentication";
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy";
 import { anyUserRegisterModel, anyURL } from "./Helpers/SharedHelpers";
 
