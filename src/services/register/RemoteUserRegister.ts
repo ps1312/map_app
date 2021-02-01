@@ -1,4 +1,4 @@
-import { UserRegisterResult, UserRegisterModel, UserRegister } from "../../models/UserRegister";
+import { UserRegisterModel, UserRegister, AuthenticatedUser } from "../../models/UserRegister";
 import { HTTPClient, HTTPClientResponse } from "../http/HTTPClient";
 import { InvalidDataError, NoConnectivityError } from "../errors";
 
@@ -8,7 +8,7 @@ export class RemoteUserRegister implements UserRegister {
     private readonly client: HTTPClient,
     ) {}
 
-  async register(params: UserRegisterModel): Promise<UserRegisterResult> {
+  async register(params: UserRegisterModel): Promise<AuthenticatedUser> {
     const response = await this.client.post(this.url, params)
 
     if (response instanceof HTTPClientResponse) {
@@ -20,7 +20,7 @@ export class RemoteUserRegister implements UserRegister {
 }
 
 class RemoteUserMapper {
-  static map(response: HTTPClientResponse, email: string): UserRegisterResult {
+  static map(response: HTTPClientResponse, email: string): AuthenticatedUser {
     const { statusCode, body } = response;
 
       if (statusCode !== 200 || !isResult(body)) {

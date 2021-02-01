@@ -1,6 +1,5 @@
 import { RemoteUserRegister } from "../../services/register/RemoteUserRegister";
 import { NoConnectivityError, InvalidDataError } from "../../services/errors";
-import { AuthenticatedUser } from "../../models/UserRegister";
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy";
 import { anyUserRegisterModel, anyURL } from "./Helpers/SharedHelpers";
 
@@ -56,13 +55,13 @@ describe('RemoteUserRegister', () => {
     const { sut, client } = makeSUT()
     const registerModelParams = anyUserRegisterModel()
 
-    const expectedResult: AuthenticatedUser = {
+    const expectedResult = {
       user: { id: 4, email: registerModelParams.email },
       token: "QpwL5tke4Pnpja7X4",
     }
 
     client.completeWithSuccess(200, { id: 4, token : "QpwL5tke4Pnpja7X4" })
-    const result = await sut.register(anyUserRegisterModel()) as AuthenticatedUser
+    const result = await sut.register(anyUserRegisterModel())
 
     expect(result.user).toStrictEqual(expectedResult.user);
     expect(result.token).toStrictEqual(expectedResult.token);

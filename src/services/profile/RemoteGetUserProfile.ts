@@ -1,15 +1,9 @@
+import { GetUserProfile } from "../../models/GetUserProfile"
+import { User } from "../../models/User"
 import { InvalidDataError, NoConnectivityError } from "../errors"
 import { HTTPClient, HTTPClientResponse } from "../http/HTTPClient"
 
-type User = {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  avatar: string;
-}
-
-export class RemoteGetUserProfile {
+export class RemoteGetUserProfile implements GetUserProfile {
   constructor(
     private readonly url: URL,
     private readonly client: HTTPClient,

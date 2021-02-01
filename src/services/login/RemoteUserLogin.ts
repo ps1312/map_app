@@ -1,14 +1,15 @@
 import { HTTPClient, HTTPClientResponse } from "../http/HTTPClient";
 import { InvalidDataError, NoConnectivityError } from "../errors";
-import { UserLoginResult, UserLoginModel } from "../../models/UserLogin";
+import { UserLogin, UserLoginModel } from "../../models/UserLogin";
+import { AuthenticationToken } from "../../models/AuthenticationToken";
 
-export class RemoteUserLogin {
+export class RemoteUserLogin implements UserLogin {
   constructor(
     private readonly url: URL,
     private readonly client: HTTPClient,
     ) {}
 
-  async login(credentials: UserLoginModel): Promise<UserLoginResult> {
+  async login(credentials: UserLoginModel): Promise<AuthenticationToken> {
     const result = await this.client.post(this.url, credentials)
 
     if (result instanceof HTTPClientResponse) {
@@ -20,7 +21,7 @@ export class RemoteUserLogin {
 }
 
 class UserLoginMapper {
-  static map(result: HTTPClientResponse): UserLoginResult {
+  static map(result: HTTPClientResponse): AuthenticationToken {
     const { statusCode, body } = result
 
     if (statusCode === 200 && isResult(body)) {

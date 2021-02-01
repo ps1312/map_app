@@ -1,6 +1,6 @@
-import { HTTPClientResponse, HTTPClientResult } from "./HTTPClient";
+import { HTTPClient, HTTPClientResponse, HTTPClientResult } from "./HTTPClient";
 
-export class FetchHTTPClient {
+export class FetchHTTPClient implements HTTPClient {
   fetch: FetchSignature
 
   constructor(fetch: FetchSignature) {
@@ -14,6 +14,10 @@ export class FetchHTTPClient {
   async post(url: URL, params: Object): Promise<HTTPClientResult> {
     const postParameters = { method: "POST", body: JSON.stringify(params) }
     return await this.makeRequest(url, postParameters);
+  }
+
+  put(url: URL, params: Object): Promise<HTTPClientResult> {
+    throw new Error("Method not implemented.");
   }
 
   private async makeRequest(url: URL, params: Object) {

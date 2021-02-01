@@ -5,8 +5,6 @@ export type UserLoginModel = {
   password: string;
 }
 
-export type UserLoginResult = AuthenticationToken | Error
-
 export interface UserLogin {
-  login(userLoginModel: UserLoginModel): Promise<UserLoginResult>;
+  login(userLoginModel: UserLoginModel): Promise<AuthenticationToken>;
 }

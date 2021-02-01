@@ -60,7 +60,7 @@ describe('RemoteUserLogin', () => {
     const expectedResult = anyLoginSuccessResult()
 
     client.completeWithSuccess(200, expectedResult)
-    const result = await sut.login(anyUserLoginModel()) as AuthenticationToken
+    const result = await sut.login(anyUserLoginModel())
 
     expect(result.token).toStrictEqual(expectedResult.token)
   })

@@ -1,5 +1,6 @@
+import { UserEditModel } from "../../models/EditUserProfile"
 import { InvalidDataError, NoConnectivityError } from "../../services/errors"
-import { RemoteEditUserProfile, UserEditModel } from "../../services/profile/RemoteEditUserProfile"
+import { RemoteEditUserProfile } from "../../services/profile/RemoteEditUserProfile"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL, anyUserId } from "./Helpers/SharedHelpers"
 
