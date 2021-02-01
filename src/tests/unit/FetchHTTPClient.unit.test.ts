@@ -23,22 +23,23 @@ describe('FetchHTTPClient', () => {
     const fetchSpy = jest.fn()
     const sut = new FetchHTTPClient(fetchSpy)
 
-    await sut.post(url, body)
+    const promise = sut.post(url, body)
 
     expect(fetchSpy).toHaveBeenCalled()
     expect(fetchSpy).toHaveBeenCalledWith(url.toString(), expectedParams)
+    await expect(promise).rejects.toEqual(new FetchHTTPError())
   });
 
   test('delivers error on request failure', async () => {
     const sut = new FetchHTTPClient(fetchRejectStub)
 
-    expect(await sut.post(anyURL(), anyUserRegisterModel())).toStrictEqual(new FetchHTTPError());
+    await expect(sut.post(anyURL(), anyUserRegisterModel())).rejects.toEqual(new FetchHTTPError());
   });
 
   test('delivers invalid data error on invalid JSON body', async () => {
     const sut = new FetchHTTPClient(fetchInvalidBodyStub)
 
-    expect(await sut.post(anyURL(), anyUserRegisterModel())).toStrictEqual(new FetchHTTPError());
+    await expect(sut.post(anyURL(), anyUserRegisterModel())).rejects.toEqual(new FetchHTTPError());
   });
 
   test('delivers success response on 200 status code and valid json body', async () => {

@@ -18,10 +18,3 @@ export interface UserRegister {
 }
 
 export type UserRegisterResult = AuthenticatedUser | Error
-
-
-export type AuthenticationToken = {
-  token: string
-}
-
-export type UserLoginResult = AuthenticationToken | Error

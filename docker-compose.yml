@@ -1,6 +1,7 @@
 version: "3"
 services:
   client:
+    stdin_open: true    # Keep container alive to listen to requests after startup
     image: "react-app"
     ports: 
     - "3000:3000"

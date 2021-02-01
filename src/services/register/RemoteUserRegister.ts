@@ -1,4 +1,4 @@
-import { UserRegisterResult, UserRegisterModel, UserRegister } from "../../models/UserAuthentication";
+import { UserRegisterResult, UserRegisterModel, UserRegister } from "../../models/UserRegister";
 import { HTTPClient, HTTPClientResponse } from "../http/HTTPClient";
 import { InvalidDataError, NoConnectivityError } from "../errors";
 
@@ -15,7 +15,7 @@ export class RemoteUserRegister implements UserRegister {
       return RemoteUserMapper.map(response, params.email)
     }
 
-    return new NoConnectivityError()
+    throw new NoConnectivityError()
   }
 }
 
@@ -24,7 +24,7 @@ class RemoteUserMapper {
     const { statusCode, body } = response;
 
       if (statusCode !== 200 || !isResult(body)) {
-        return new InvalidDataError();
+        throw new InvalidDataError();
       } else {
         return {
           user: { id: body.id, email: email }, 
@@ -34,11 +34,11 @@ class RemoteUserMapper {
   }
 }
 
-type ResultBody = {
+type RegisterResultBody = {
   id: number;
   token: string;
 }
 
-function isResult(result: ResultBody): result is ResultBody {
-  return (result as ResultBody).id !== undefined;
+function isResult(result: RegisterResultBody): result is RegisterResultBody {
+  return (result as RegisterResultBody).id !== undefined;
 }
