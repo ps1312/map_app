@@ -1,6 +1,7 @@
+import { NoConnectivityError } from "../../services/errors"
 import { HTTPClient } from "../../services/http/HTTPClient"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
-import { anyURL } from "./Helpers/SharedHelpers"
+import { anyURL, anyUserId } from "./Helpers/SharedHelpers"
 
 type UserEditModel = {
   email: string;
@@ -17,6 +18,8 @@ class RemoteEditUserProfile {
   async update(userId: number, updatedUser: UserEditModel): Promise<void> {
     const userURL = new URL(`${userId}`, this.url)
     await this.client.put(userURL, updatedUser)
+
+    throw new NoConnectivityError()
   }
 }
 
@@ -27,18 +30,28 @@ describe('RemoteEditUserProfile', () => {
     expect(client.requests).toStrictEqual([])
   })
 
-  test("delivers correct user edit params and URL to client", () => {
+  test("delivers correct user edit params and URL to client", async () => {
     const url = new URL("http://diferent-url.com")
     const userId = 4
     const editedUserParams = anyUserEditModel()
     const [sut, client] = makeSUT(url)
 
-    sut.update(userId, editedUserParams)
+    const promise = sut.update(userId, editedUserParams)
 
     const expectedURL = new URL(`${userId}`, url)
 
+    await expect(promise).rejects.toEqual(new NoConnectivityError())
     expect(client.requests[0].url.toString()).toStrictEqual(expectedURL.toString())
     expect(client.requests[0].params).toStrictEqual(editedUserParams)
+  })
+
+  test("delivers no connectivity error on client failure", async () => {
+    const [sut, client] = makeSUT()
+
+    client.completeWith(new Error())
+    const promise = sut.update(anyUserId(), anyUserEditModel())
+
+    await expect(promise).rejects.toEqual(new NoConnectivityError())
   })
 
   function makeSUT(url: URL = anyURL()): [RemoteEditUserProfile, HTTPClientSpy] {
