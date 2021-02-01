@@ -11,22 +11,25 @@ export class RemoteGetUserProfile implements GetUserProfile {
 
   async load(userId: number): Promise<User> {
     const userURL = new URL(`${userId}`, this.url)
-    const result = await this.client.get(userURL)
+    const response = await this.client.get(userURL)
 
-    if (result instanceof HTTPClientResponse) {
-      const { statusCode, body } = result
-
-      if (statusCode === 200 && isResult(body)) {
-        return body.data
-      }
-      throw new InvalidDataError()
+    if (response instanceof HTTPClientResponse) {
+      return RemoteGetUserProfileHandler.handle(response)
     }
 
     throw new NoConnectivityError()
   }
 }
 
-type GetUserResultBody = {
+class RemoteGetUserProfileHandler {
+  static handle(response: HTTPClientResponse) {
+    const { statusCode, body } = response
+    if (statusCode === 200 && hasValidResponseBody(body)) return body.data
+    throw new InvalidDataError()
+  }
+}
+
+type GetUserResponseBody = {
   data: {
     id: number;
     email: string;
@@ -36,6 +39,6 @@ type GetUserResultBody = {
   }
 }
 
-function isResult(result: GetUserResultBody): result is GetUserResultBody {
-  return (result as GetUserResultBody).data !== undefined;
+function hasValidResponseBody(response: GetUserResponseBody): response is GetUserResponseBody {
+  return (response as GetUserResponseBody).data !== undefined;
 }
