@@ -2,11 +2,16 @@ import { HTTPClient, HTTPClientResult, HTTPClientResponse } from "../../../servi
 import { UserRegisterModel } from "../../../models/UserRegister"
 
 export class HTTPClientSpy implements HTTPClient {
-  requests: { url: URL, params: UserRegisterModel }[] = []
+  requests: { url: URL, params?: UserRegisterModel }[] = []
   response?: HTTPClientResult
 
   async post(url: URL, params: UserRegisterModel): Promise<HTTPClientResult> {
     this.requests.push({ url, params })
+    return this.response!
+  }
+
+  async get(url: URL): Promise<HTTPClientResult> {
+    this.requests.push({ url })
     return this.response!
   }
 
