@@ -71,6 +71,13 @@ describe('RemoteEditUserProfile', () => {
     await expect(sut.update(anyUserId(), anyUserEditModel())).rejects.toEqual(new InvalidDataError())
   })
 
+  test('delivers invalid data error on 200 with invalid json', async () => {
+    const [sut, client] = makeSUT()
+
+    client.completeWithSuccess(200, "invalid json body")
+    await expect(sut.update(anyUserId(), anyUserEditModel())).rejects.toEqual(new InvalidDataError())
+  })
+
   function makeSUT(url: URL = anyURL()): [RemoteEditUserProfile, HTTPClientSpy] {
     const client = new HTTPClientSpy()
     const sut = new RemoteEditUserProfile(url, client)
