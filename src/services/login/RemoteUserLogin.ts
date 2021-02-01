@@ -10,32 +10,28 @@ export class RemoteUserLogin implements UserLogin {
     ) {}
 
   async login(credentials: UserLoginModel): Promise<AuthenticationToken> {
-    const result = await this.client.post(this.url, credentials)
+    const response = await this.client.post(this.url, credentials)
 
-    if (result instanceof HTTPClientResponse) {
-      return UserLoginMapper.map(result)
+    if (response instanceof HTTPClientResponse) {
+      return RemoteUserLoginHandler.handle(response)
     }
 
     throw new NoConnectivityError();
   }
 }
 
-class UserLoginMapper {
-  static map(result: HTTPClientResponse): AuthenticationToken {
-    const { statusCode, body } = result
-
-    if (statusCode === 200 && isResult(body)) {
-      return body
-    }
-
+class RemoteUserLoginHandler {
+  static handle(response: HTTPClientResponse): AuthenticationToken {
+    const { statusCode, body } = response
+    if (statusCode === 200 && hasValidResponseBody(body)) return body
     throw new InvalidDataError()
   }
 }
 
-type LoginResultBody = {
+type LoginResponseBody = {
   token: string;
 }
 
-function isResult(result: LoginResultBody): result is LoginResultBody {
-  return (result as LoginResultBody).token !== undefined;
+function hasValidResponseBody(result: LoginResponseBody): result is LoginResponseBody {
+  return (result as LoginResponseBody).token !== undefined;
 }

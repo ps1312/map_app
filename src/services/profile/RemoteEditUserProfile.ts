@@ -11,29 +11,32 @@ export class RemoteEditUserProfile implements EditUserProfile {
 
   async update(userId: number, updatedUser: UserEditModel): Promise<User> {
     const userURL = new URL(`${userId}`, this.url)
-    const result = await this.client.put(userURL, updatedUser)
+    const response = await this.client.put(userURL, updatedUser)
 
-    if (result instanceof HTTPClientResponse) {
-      const { statusCode, body } = result
-
-      if (statusCode === 200 && isResult(body)) {
-        return { id: userId, ...body }
-      }
-
-      throw new InvalidDataError()
+    if (response instanceof HTTPClientResponse) {
+      return RemoteUserEditHandler.handle(userId, response)
     }
 
     throw new NoConnectivityError()
   }
+
 }
 
-type EditUserResultBody = {
+class RemoteUserEditHandler {
+  static handle(userId: number, response: HTTPClientResponse): User {
+    const { statusCode, body } = response
+    if (statusCode === 200 && hasValidResponseBody(body)) return { id: userId, ...body }
+    throw new InvalidDataError()
+  }
+}
+
+type EditUserResponseBody = {
   email?: string;
   first_name?: string;
   last_name?: string;
   updatedAt: Date;
 }
 
-function isResult(result: EditUserResultBody): result is EditUserResultBody {
-  return (result as EditUserResultBody).updatedAt !== undefined;
+function hasValidResponseBody(response: EditUserResponseBody): response is EditUserResponseBody {
+  return (response as EditUserResponseBody).updatedAt !== undefined;
 }
