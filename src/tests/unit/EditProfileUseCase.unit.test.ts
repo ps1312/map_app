@@ -1,5 +1,5 @@
-import { NoConnectivityError } from "../../services/errors"
-import { HTTPClient } from "../../services/http/HTTPClient"
+import { InvalidDataError, NoConnectivityError } from "../../services/errors"
+import { HTTPClient, HTTPClientResponse } from "../../services/http/HTTPClient"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL, anyUserId } from "./Helpers/SharedHelpers"
 
@@ -17,7 +17,11 @@ class RemoteEditUserProfile {
 
   async update(userId: number, updatedUser: UserEditModel): Promise<void> {
     const userURL = new URL(`${userId}`, this.url)
-    await this.client.put(userURL, updatedUser)
+    const result = await this.client.put(userURL, updatedUser)
+
+    if (result instanceof HTTPClientResponse) {
+      throw new InvalidDataError()
+    }
 
     throw new NoConnectivityError()
   }
@@ -52,6 +56,19 @@ describe('RemoteEditUserProfile', () => {
     const promise = sut.update(anyUserId(), anyUserEditModel())
 
     await expect(promise).rejects.toEqual(new NoConnectivityError())
+  })
+
+  test("delivers invalid data error on non 200 status code", async () => {
+    const [sut, client] = makeSUT()
+
+    client.completeWithSuccess(199, {})
+    await expect(sut.update(anyUserId(), anyUserEditModel())).rejects.toEqual(new InvalidDataError())
+
+    client.completeWithSuccess(201, {})
+    await expect(sut.update(anyUserId(), anyUserEditModel())).rejects.toEqual(new InvalidDataError())
+
+    client.completeWithSuccess(300, {})
+    await expect(sut.update(anyUserId(), anyUserEditModel())).rejects.toEqual(new InvalidDataError())
   })
 
   function makeSUT(url: URL = anyURL()): [RemoteEditUserProfile, HTTPClientSpy] {
