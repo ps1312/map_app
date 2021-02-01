@@ -1,5 +1,5 @@
-import { NoConnectivityError } from "../../services/errors"
-import { HTTPClient, HTTPClientResult } from "../../services/http/HTTPClient"
+import { InvalidDataError, NoConnectivityError } from "../../services/errors"
+import { HTTPClient, HTTPClientResponse } from "../../services/http/HTTPClient"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL } from "./Helpers/SharedHelpers"
 
@@ -11,7 +11,11 @@ class RemoteGetProfile {
 
   async load(userId: number): Promise<void> {
     const userURL = new URL(`${userId}`, this.url)
-    await this.client.get(userURL)
+    const result = await this.client.get(userURL)
+
+    if (result instanceof HTTPClientResponse) {
+      throw new InvalidDataError()
+    }
 
     throw new NoConnectivityError()
   }
@@ -40,10 +44,23 @@ describe('RemoteGetProfile', () => {
   test("delivers no connectivity error on client failure", async () => {
     const [sut, client] = makeSUT()
 
+    client.completeWith(new Error())
     const promise = sut.load(anyUserId())
 
-    client.completeWith(new Error())
     await expect(promise).rejects.toEqual(new NoConnectivityError())
+  })
+
+  test("delivers invalid data error on non 200 status code", async () => {
+    const [sut, client] = makeSUT()
+
+    client.completeWithSuccess(199, {})
+    await expect(sut.load(anyUserId())).rejects.toEqual(new InvalidDataError())
+
+    client.completeWithSuccess(201, {})
+    await expect(sut.load(anyUserId())).rejects.toEqual(new InvalidDataError())
+
+    client.completeWithSuccess(300, {})
+    await expect(sut.load(anyUserId())).rejects.toEqual(new InvalidDataError())
   })
 
   function makeSUT(url: URL = anyURL()): [RemoteGetProfile, HTTPClientSpy] {
