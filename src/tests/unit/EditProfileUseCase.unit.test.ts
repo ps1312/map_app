@@ -55,6 +55,37 @@ describe('RemoteEditUserProfile', () => {
     await expect(sut.update(anyUserId(), anyUserEditModel())).rejects.toEqual(new InvalidDataError())
   })
 
+  test('delivers updated user with updatedAt timestamp on 200 status code and valid JSON body', async () => {
+    const [sut, client] = makeSUT()
+
+    const currentUser = {
+      id: anyUserId(),
+      email: "janet.weaver@reqres.in",
+      first_name: "Janet",
+      last_name: "Weaver",
+    }
+
+    const updatedUser = {
+      email: "another-email@mail.com",
+      first_name: "updated first",
+      last_name: "updated last",
+      updatedAt: "2021-02-01T18:29:47.742Z"
+    }
+
+    client.completeWithSuccess(200, updatedUser)
+    const result = await sut.update(anyUserId(), updatedUser)
+
+    const expectedUser = {
+      id: currentUser.id,
+      email: updatedUser.email,
+      first_name: updatedUser.first_name,
+      last_name: updatedUser.last_name,
+      updatedAt: "2021-02-01T18:29:47.742Z"
+    }
+  
+    expect(result).toStrictEqual(expectedUser)
+  })
+
   function makeSUT(url: URL = anyURL()): [RemoteEditUserProfile, HTTPClientSpy] {
     const client = new HTTPClientSpy()
     const sut = new RemoteEditUserProfile(url, client)
