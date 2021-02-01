@@ -33,13 +33,6 @@ describe('UserLocalStore', () => {
     expect(result).toStrictEqual(null)
   })
 
-  test('retrieves newly inserted user string object on local store', () => {
-    const subject = anyUser()
-    const sut = new UserLocalStore(localStorage)
-    sut.insert(subject)
-    expect(sut.retrieve()).toStrictEqual(JSON.stringify(subject))
-  })
-
   test('retrieves last inserted user string after insert twice', () => {
     const sut = new UserLocalStore(localStorage)
 
