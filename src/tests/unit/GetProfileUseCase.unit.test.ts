@@ -20,7 +20,7 @@ describe('RemoteGetUserProfile', () => {
     await expect(promise).rejects.toEqual(new NoConnectivityError())
 
     const expectedURL = new URL(`${userId}`, url)
-    expect(client.requests[0].url).toStrictEqual(expectedURL)
+    expect(client.requests[0].url.toString()).toStrictEqual(expectedURL.toString())
   })
 
   test("delivers no connectivity error on client failure", async () => {
@@ -55,7 +55,7 @@ describe('RemoteGetUserProfile', () => {
   test('delivers requested user data on 200 status code and valid JSON body', async () => {
     const [sut, client] = makeSUT()
 
-    const validBody = {
+    const validProfileBody = {
       "data": {
           "id": 2,
           "email": "janet.weaver@reqres.in",
@@ -65,10 +65,10 @@ describe('RemoteGetUserProfile', () => {
       },
     }
 
-    client.completeWithSuccess(200, validBody)
+    client.completeWithSuccess(200, validProfileBody)
     const result = await sut.load(anyUserId())
     
-    expect(result).toStrictEqual(validBody['data'])
+    expect(result).toStrictEqual(validProfileBody['data'])
   })
 
   function makeSUT(url: URL = anyURL()): [RemoteGetUserProfile, HTTPClientSpy] {
