@@ -16,8 +16,9 @@ export class FetchHTTPClient implements HTTPClient {
     return await this.makeRequest(url, postParameters);
   }
 
-  put(url: URL, params: Object): Promise<HTTPClientResult> {
-    throw new Error("Method not implemented.");
+  async put(url: URL, params: Object): Promise<HTTPClientResult> {
+    const putParameters = { method: "PUT", body: JSON.stringify(params) }
+    return await this.makeRequest(url, putParameters);
   }
 
   private async makeRequest(url: URL, params: Object) {

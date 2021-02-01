@@ -46,11 +46,32 @@ describe('FetchHTTPClient', () => {
     await expect(promise).rejects.toEqual(new FetchHTTPError())
   });
 
+  test.only('PUT calls fetch with correct url and params', async () => {
+    const url = anyURL()
+    const body = anyUserRegisterModel()
+
+    const expectedParams: RequestInit = {
+      headers: { "Content-Type": "application/json" },
+      method: "PUT",
+      body: JSON.stringify(body)
+    }
+    
+    const fetchSpy = jest.fn()
+    const sut = new FetchHTTPClient(fetchSpy)
+
+    const promise = sut.put(url, body)
+
+    expect(fetchSpy).toHaveBeenCalled()
+    expect(fetchSpy).toHaveBeenCalledWith(url.toString(), expectedParams)
+    await expect(promise).rejects.toEqual(new FetchHTTPError())
+  });
+
   test('delivers error on request failure', async () => {
     const sut = new FetchHTTPClient(fetchRejectStub)
 
     await expect(sut.post(anyURL(), anyUserRegisterModel())).rejects.toEqual(new FetchHTTPError());
     await expect(sut.get(anyURL())).rejects.toEqual(new FetchHTTPError());
+    await expect(sut.put(anyURL(), anyUserRegisterModel())).rejects.toEqual(new FetchHTTPError());
   });
 
   test('delivers invalid data error on invalid JSON body', async () => {
@@ -58,6 +79,7 @@ describe('FetchHTTPClient', () => {
 
     await expect(sut.post(anyURL(), anyUserRegisterModel())).rejects.toEqual(new FetchHTTPError());
     await expect(sut.get(anyURL())).rejects.toEqual(new FetchHTTPError());
+    await expect(sut.put(anyURL(), anyUserRegisterModel())).rejects.toEqual(new FetchHTTPError());
   });
 
   test('post delivers success response on 200 status code and valid json body', async () => {
@@ -71,6 +93,10 @@ describe('FetchHTTPClient', () => {
     const getResult = await sut.get(anyURL()) as HTTPClientResponse
     expect(getResult.statusCode).toStrictEqual(expectedResult.statusCode)
     expect(getResult.body).toStrictEqual(expectedResult.body)
+
+    const putResult = await sut.put(anyURL(), anyUserRegisterModel()) as HTTPClientResponse
+    expect(putResult.statusCode).toStrictEqual(expectedResult.statusCode)
+    expect(putResult.body).toStrictEqual(expectedResult.body)
   });
 
   function fetchRejectStub(): Promise<Response> {
