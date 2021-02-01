@@ -1,6 +1,7 @@
 import { FetchHTTPClient } from "../../services/http/FetchHTTPClient"
 import { RemoteUserRegister } from "../../services/register/RemoteUserRegister"
-import { AuthenticatedUser, UserRegisterResult, UserRegisterModel } from "../../models/UserRegister"
+import { UserRegisterModel } from "../../models/UserRegister"
+import { AuthenticatedUser } from "../../models/AuthenticatedUser"
 
 describe('End to end API call to test RemoteUserRegister and FetchHTTPClient', () => {
   test('delivers correct fixed data on request to REQ|RES server on register', async () => {
@@ -25,7 +26,7 @@ describe('End to end API call to test RemoteUserRegister and FetchHTTPClient', (
     return { email: "eve.holt@reqres.in", password: "pistol" }
   }
 
-  function expectedResult(email: string): UserRegisterResult {
+  function expectedResult(email: string): AuthenticatedUser {
     return { user: { id: 4, email: email}, token: "QpwL5tke4Pnpja7X4" }
   }
 })

@@ -12,4 +12,6 @@ export type HTTPClientResult = HTTPClientResponse | Error
 
 export interface HTTPClient {
   post(url: URL, params: Object): Promise<HTTPClientResult>;
+  get(url: URL): Promise<HTTPClientResult>
+  put(url: URL, params: Object): Promise<HTTPClientResult>;
 }

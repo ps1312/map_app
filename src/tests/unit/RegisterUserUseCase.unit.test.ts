@@ -1,6 +1,5 @@
 import { RemoteUserRegister } from "../../services/register/RemoteUserRegister";
 import { NoConnectivityError, InvalidDataError } from "../../services/errors";
-import { AuthenticatedUser } from "../../models/UserRegister";
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy";
 import { anyUserRegisterModel, anyURL } from "./Helpers/SharedHelpers";
 
@@ -14,12 +13,13 @@ describe('RemoteUserRegister', () => {
   test('register requests data from url with correct params', async () => {
     const url = new URL("http://another-url.com")
     const { sut, client } = makeSUT(url)
-    const params = anyUserRegisterModel()
+    const registerModelParams = anyUserRegisterModel()
 
     client.completeWithSuccess(200, { id: 4, token : "QpwL5tke4Pnpja7X4" })
-    await sut.register(params)
+    await sut.register(registerModelParams)
 
-    expect(client.requests[0]).toEqual({ url, params })
+    expect(client.requests[0].url.toString()).toStrictEqual(url.toString())
+    expect(client.requests[0].params).toStrictEqual(registerModelParams)
   })
 
   test('register delivers no connectivity error on no internet connection', async () => {
@@ -53,15 +53,15 @@ describe('RemoteUserRegister', () => {
 
   test('register delivers user with access token on 200 status code and valid response data', async () => {
     const { sut, client } = makeSUT()
-    const params = anyUserRegisterModel()
+    const registerModelParams = anyUserRegisterModel()
 
-    const expectedResult: AuthenticatedUser = {
-      user: { id: 4, email: params.email },
+    const expectedResult = {
+      user: { id: 4, email: registerModelParams.email },
       token: "QpwL5tke4Pnpja7X4",
     }
 
     client.completeWithSuccess(200, { id: 4, token : "QpwL5tke4Pnpja7X4" })
-    const result = await sut.register(anyUserRegisterModel()) as AuthenticatedUser
+    const result = await sut.register(anyUserRegisterModel())
 
     expect(result.user).toStrictEqual(expectedResult.user);
     expect(result.token).toStrictEqual(expectedResult.token);

@@ -14,36 +14,37 @@ describe('RemoteUserLogin', () => {
   test('login requests data from url with correct params', async () => {
     const url = new URL("http://another-url.com")
     const [sut, client] = makeSUT(url)
-    const params = anyUserLoginModel()
+    const loginModelParams = anyUserLoginModel()
 
     client.completeWithSuccess(200, anyLoginSuccessResult())
-    await sut.login(params)
+    await sut.login(loginModelParams)
 
-    expect(client.requests[0]).toEqual({ url, params })
+    expect(client.requests[0].url.toString()).toStrictEqual(url.toString())
+    expect(client.requests[0].params).toStrictEqual(loginModelParams)
   })
 
   test('login delivers connectivity error when client fails', async () => {
     const [sut, client] = makeSUT()
-    const params = anyUserLoginModel()
+    const loginModelParams = anyUserLoginModel()
 
     client.completeWith(new Error())
-    const promise = sut.login(params)
+    const promise = sut.login(loginModelParams)
 
     await expect(promise).rejects.toEqual(new NoConnectivityError())
   });
 
   test('login delivers invalid data error on non 200 status code', async () => {
     const [sut, client] = makeSUT()
-    const params = anyUserLoginModel()
+    const loginModelParams = anyUserLoginModel()
 
     client.completeWithSuccess(199, {})
-    await expect(sut.login(params)).rejects.toEqual(new InvalidDataError())
+    await expect(sut.login(loginModelParams)).rejects.toEqual(new InvalidDataError())
 
     client.completeWithSuccess(201, {})
-    await expect(sut.login(params)).rejects.toEqual(new InvalidDataError())
+    await expect(sut.login(loginModelParams)).rejects.toEqual(new InvalidDataError())
 
     client.completeWithSuccess(300, {})
-    await expect(sut.login(params)).rejects.toEqual(new InvalidDataError())
+    await expect(sut.login(loginModelParams)).rejects.toEqual(new InvalidDataError())
   })
 
   test('login delivers invalid data error on 200 with invalid json', async () => {
@@ -59,7 +60,7 @@ describe('RemoteUserLogin', () => {
     const expectedResult = anyLoginSuccessResult()
 
     client.completeWithSuccess(200, expectedResult)
-    const result = await sut.login(anyUserLoginModel()) as AuthenticationToken
+    const result = await sut.login(anyUserLoginModel())
 
     expect(result.token).toStrictEqual(expectedResult.token)
   })
