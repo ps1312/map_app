@@ -46,48 +46,31 @@ describe('FetchHTTPClient', () => {
     await expect(promise).rejects.toEqual(new FetchHTTPError())
   });
 
-  test('post delivers error on request failure', async () => {
+  test('delivers error on request failure', async () => {
     const sut = new FetchHTTPClient(fetchRejectStub)
 
     await expect(sut.post(anyURL(), anyUserRegisterModel())).rejects.toEqual(new FetchHTTPError());
+    await expect(sut.get(anyURL())).rejects.toEqual(new FetchHTTPError());
   });
 
-  test('post delivers invalid data error on invalid JSON body', async () => {
+  test('delivers invalid data error on invalid JSON body', async () => {
     const sut = new FetchHTTPClient(fetchInvalidBodyStub)
 
     await expect(sut.post(anyURL(), anyUserRegisterModel())).rejects.toEqual(new FetchHTTPError());
+    await expect(sut.get(anyURL())).rejects.toEqual(new FetchHTTPError());
   });
 
   test('post delivers success response on 200 status code and valid json body', async () => {
     const expectedResult = new HTTPClientResponse(200, anyValidJSONBody())
-
     const sut = new FetchHTTPClient(fetchSuccessStub)
-    const result = await sut.post(anyURL(), anyUserRegisterModel()) as HTTPClientResponse
 
-    expect(result.statusCode).toStrictEqual(expectedResult.statusCode)
-    expect(result.body).toStrictEqual(expectedResult.body)
-  });
+    const postResult = await sut.post(anyURL(), anyUserRegisterModel()) as HTTPClientResponse
+    expect(postResult.statusCode).toStrictEqual(expectedResult.statusCode)
+    expect(postResult.body).toStrictEqual(expectedResult.body)
 
-  test('get delivers error on request failure', async () => {
-    const sut = new FetchHTTPClient(fetchRejectStub)
-
-    await expect(sut.get(anyURL())).rejects.toEqual(new FetchHTTPError());
-  });
-
-  test('get delivers invalid data error on invalid JSON body', async () => {
-    const sut = new FetchHTTPClient(fetchInvalidBodyStub)
-
-    await expect(sut.get(anyURL())).rejects.toEqual(new FetchHTTPError());
-  });
-
-  test('get delivers success response on 200 status code and valid json body', async () => {
-    const expectedResult = new HTTPClientResponse(200, anyValidJSONBody())
-
-    const sut = new FetchHTTPClient(fetchSuccessStub)
-    const result = await sut.get(anyURL()) as HTTPClientResponse
-
-    expect(result.statusCode).toStrictEqual(expectedResult.statusCode)
-    expect(result.body).toStrictEqual(expectedResult.body)
+    const getResult = await sut.get(anyURL()) as HTTPClientResponse
+    expect(getResult.statusCode).toStrictEqual(expectedResult.statusCode)
+    expect(getResult.body).toStrictEqual(expectedResult.body)
   });
 
   function fetchRejectStub(): Promise<Response> {
