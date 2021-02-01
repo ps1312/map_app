@@ -11,7 +11,7 @@ describe('End to end API call to test RemoteUserLogin and FetchHTTPClient', () =
 
     const result = await sut.login(registerModel) as AuthenticationToken
 
-    const expected = expectedResult(registerModel.email)
+    const expected = expectedResult()
 
     expect(result.token).toStrictEqual(expected.token)
   })
@@ -24,7 +24,7 @@ describe('End to end API call to test RemoteUserLogin and FetchHTTPClient', () =
     return { email: "eve.holt@reqres.in", password: "pistol" }
   }
 
-  function expectedResult(email: string): AuthenticationToken {
+  function expectedResult(): AuthenticationToken {
     return { token: "QpwL5tke4Pnpja7X4" }
   }
 })
