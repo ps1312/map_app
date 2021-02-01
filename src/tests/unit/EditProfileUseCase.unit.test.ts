@@ -22,25 +22,31 @@ class RemoteEditUserProfile {
 
 describe('RemoteEditUserProfile', () => {
   test("init does not make request", () => {
-    const client = new HTTPClientSpy()
-    new RemoteEditUserProfile(anyURL(), client)
+    const [, client] = makeSUT()
 
     expect(client.requests).toStrictEqual([])
   })
 
   test("delivers correct user edit params and URL to client", () => {
-    const url = anyURL()
+    const url = new URL("http://diferent-url.com")
     const userId = 4
-    const client = new HTTPClientSpy()
-    const sut = new RemoteEditUserProfile(url, client)
     const editedUserParams = anyUserEditModel()
+    const [sut, client] = makeSUT(url)
 
     sut.update(userId, editedUserParams)
 
     const expectedURL = new URL(`${userId}`, url)
-    expect(client.requests[0].url).toStrictEqual(expectedURL)
+
+    expect(client.requests[0].url.toString()).toStrictEqual(expectedURL.toString())
     expect(client.requests[0].params).toStrictEqual(editedUserParams)
   })
+
+  function makeSUT(url: URL = anyURL()): [RemoteEditUserProfile, HTTPClientSpy] {
+    const client = new HTTPClientSpy()
+    const sut = new RemoteEditUserProfile(url, client)
+
+    return [sut, client]
+  }
 
   function anyUserEditModel(): UserEditModel {
     return { email: "any-email@gmail.com", first_name: "any-first-name", last_name: "any-last-name" }
