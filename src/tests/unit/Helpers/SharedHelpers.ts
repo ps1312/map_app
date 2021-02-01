@@ -11,3 +11,7 @@ export function anyURL(): URL {
 export function anyUserRegisterModel(): UserRegisterModel {
   return { email: 'any-email@mail.com', password: 'any-password' }
 }
+
+export function anyUserId(): number {
+  return 4
+}

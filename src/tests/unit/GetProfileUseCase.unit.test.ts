@@ -1,7 +1,7 @@
 import { InvalidDataError, NoConnectivityError } from "../../services/errors"
 import { RemoteGetUserProfile } from "../../services/profile/RemoteGetUserProfile"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
-import { anyURL } from "./Helpers/SharedHelpers"
+import { anyURL, anyUserId } from "./Helpers/SharedHelpers"
 
 describe('RemoteGetUserProfile', () => {
   test("does not make requests on init", () => {
@@ -76,9 +76,5 @@ describe('RemoteGetUserProfile', () => {
     const sut = new RemoteGetUserProfile(url, client)
 
     return [sut, client]
-  }
-
-  function anyUserId(): number {
-    return 4
   }
 })
