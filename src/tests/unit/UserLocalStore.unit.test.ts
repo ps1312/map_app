@@ -40,9 +40,20 @@ describe('UserLocalStore', () => {
     expect(sut.retrieve()).toStrictEqual(JSON.stringify(subject))
   })
 
+  test('retrieves last inserted user string after insert twice', () => {
+    const sut = new UserLocalStore(localStorage)
+
+    sut.insert(anyUser())
+
+    const latestUser = anyUser()
+    sut.insert(latestUser)
+
+    expect(sut.retrieve()).toStrictEqual(JSON.stringify(latestUser))
+  })
+
   function anyUser(): User {
     return {
-      id: 2,
+      id: Math.random(),
       email: 'janet.weaver@reqres.in',
       first_name: 'Janet',
       last_name: 'Weaver',
