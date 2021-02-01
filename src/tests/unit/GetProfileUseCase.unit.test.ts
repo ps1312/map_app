@@ -63,6 +63,13 @@ describe('RemoteGetProfile', () => {
     await expect(sut.load(anyUserId())).rejects.toEqual(new InvalidDataError())
   })
 
+  test('delivers invalid data error on 200 status code but no valid JSON body', async () => {
+    const [sut, client] = makeSUT()
+
+    client.completeWithSuccess(200, {})
+    await expect(sut.load(anyUserId())).rejects.toEqual(new InvalidDataError())
+  })
+
   function makeSUT(url: URL = anyURL()): [RemoteGetProfile, HTTPClientSpy] {
     const client = new HTTPClientSpy()
     const sut = new RemoteGetProfile(url, client)
