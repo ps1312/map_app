@@ -1,54 +1,9 @@
 import { InvalidDataError, NoConnectivityError } from "../../services/errors"
-import { HTTPClient, HTTPClientResponse } from "../../services/http/HTTPClient"
+import { RemoteGetUserProfile } from "../../services/profile/RemoteGetUserProfile"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL } from "./Helpers/SharedHelpers"
 
-type User = {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  avatar: string;
-}
-
-class RemoteGetProfile {
-  constructor(
-    private readonly url: URL,
-    private readonly client: HTTPClient,
-  ) {}
-
-  async load(userId: number): Promise<User> {
-    const userURL = new URL(`${userId}`, this.url)
-    const result = await this.client.get(userURL)
-
-    if (result instanceof HTTPClientResponse) {
-      const { statusCode, body } = result
-
-      if (statusCode === 200 && isResult(body)) {
-        return body.data
-      }
-      throw new InvalidDataError()
-    }
-
-    throw new NoConnectivityError()
-  }
-}
-
-type GetUserResultBody = {
-  data: {
-    id: number;
-    email: string;
-    first_name: string;
-    last_name: string;
-    avatar: string;
-  }
-}
-
-function isResult(result: GetUserResultBody): result is GetUserResultBody {
-  return (result as GetUserResultBody).data !== undefined;
-}
-
-describe('RemoteGetProfile', () => {
+describe('RemoteGetUserProfile', () => {
   test("does not make requests on init", () => {
     const [, client] = makeSUT()
 
@@ -116,9 +71,9 @@ describe('RemoteGetProfile', () => {
     expect(result).toStrictEqual(validBody['data'])
   })
 
-  function makeSUT(url: URL = anyURL()): [RemoteGetProfile, HTTPClientSpy] {
+  function makeSUT(url: URL = anyURL()): [RemoteGetUserProfile, HTTPClientSpy] {
     const client = new HTTPClientSpy()
-    const sut = new RemoteGetProfile(url, client)
+    const sut = new RemoteGetUserProfile(url, client)
 
     return [sut, client]
   }
