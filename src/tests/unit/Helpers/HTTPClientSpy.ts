@@ -15,6 +15,11 @@ export class HTTPClientSpy implements HTTPClient {
     return this.response!
   }
 
+  async put(url: URL, params: Object): Promise<HTTPClientResult> {
+    this.requests.push({ url, params })
+    return this.response!
+  }
+
   completeWith(error: Error) {
     this.response = error
   }
