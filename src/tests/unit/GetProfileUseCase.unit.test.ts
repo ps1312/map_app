@@ -1,4 +1,5 @@
-import { HTTPClient } from "../../services/http/HTTPClient"
+import { NoConnectivityError } from "../../services/errors"
+import { HTTPClient, HTTPClientResult } from "../../services/http/HTTPClient"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL } from "./Helpers/SharedHelpers"
 
@@ -8,30 +9,51 @@ class RemoteGetProfile {
     private readonly client: HTTPClient,
   ) {}
 
-  load(userId: number) {
+  async load(userId: number): Promise<void> {
     const userURL = new URL(`${userId}`, this.url)
-    this.client.get(userURL)
+    await this.client.get(userURL)
+
+    throw new NoConnectivityError()
   }
 }
 
 describe('RemoteGetProfile', () => {
   test("does not make requests on init", () => {
-    const client = new HTTPClientSpy()
-    new RemoteGetProfile(anyURL(), client)
+    const [, client] = makeSUT()
 
     expect(client.requests).toStrictEqual([])
   })
 
-  test("pass correct url with query params to client on request", () => {
+  test("pass correct url with query params to client on request", async () => {
     const url = anyURL()
     const userId = 4
+    const [sut, client] = makeSUT(url)
 
-    const client = new HTTPClientSpy()
-    const sut = new RemoteGetProfile(url, client)
+    const promise = sut.load(userId)
 
-    sut.load(userId)
+    await expect(promise).rejects.toEqual(new NoConnectivityError())
 
     const expectedURL = new URL(`${userId}`, url)
     expect(client.requests[0].url).toStrictEqual(expectedURL)
   })
+
+  test("delivers no connectivity error on client failure", async () => {
+    const [sut, client] = makeSUT()
+
+    const promise = sut.load(anyUserId())
+
+    client.completeWith(new Error())
+    await expect(promise).rejects.toEqual(new NoConnectivityError())
+  })
+
+  function makeSUT(url: URL = anyURL()): [RemoteGetProfile, HTTPClientSpy] {
+    const client = new HTTPClientSpy()
+    const sut = new RemoteGetProfile(url, client)
+
+    return [sut, client]
+  }
+
+  function anyUserId(): number {
+    return 4
+  }
 })
