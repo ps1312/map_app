@@ -1,31 +1,7 @@
 import { InvalidDataError, NoConnectivityError } from "../../services/errors"
-import { HTTPClient, HTTPClientResponse } from "../../services/http/HTTPClient"
+import { RemoteEditUserProfile, UserEditModel } from "../../services/profile/RemoteEditUserProfile"
 import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
 import { anyURL, anyUserId } from "./Helpers/SharedHelpers"
-
-type UserEditModel = {
-  email: string;
-  first_name: string;
-  last_name: string;
-}
-
-class RemoteEditUserProfile {
-  constructor(
-    private readonly url: URL,
-    private readonly client: HTTPClient,
-  ) {}
-
-  async update(userId: number, updatedUser: UserEditModel): Promise<void> {
-    const userURL = new URL(`${userId}`, this.url)
-    const result = await this.client.put(userURL, updatedUser)
-
-    if (result instanceof HTTPClientResponse) {
-      throw new InvalidDataError()
-    }
-
-    throw new NoConnectivityError()
-  }
-}
 
 describe('RemoteEditUserProfile', () => {
   test("init does not make request", () => {
