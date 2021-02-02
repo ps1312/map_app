@@ -69,6 +69,15 @@ describe('UserLocalStore', () => {
     expect(sut.retrieve()).toStrictEqual(null)
   })
 
+  test('retrieve twice does not have side effects', () => {
+    const sut = new UserLocalStore(localStorage)
+    const latestUser = anyUser()
+
+    sut.insert(latestUser)
+    expect(sut.retrieve()).toStrictEqual(JSON.stringify(latestUser))
+    expect(sut.retrieve()).toStrictEqual(JSON.stringify(latestUser))
+  })
+
   function anyUser(): User {
     return {
       id: Math.random(),
@@ -80,5 +89,3 @@ describe('UserLocalStore', () => {
     }
   }
 })
-
-export {}
