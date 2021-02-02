@@ -1,5 +1,10 @@
 [![Build Status](https://travis-ci.com/ps1312/map_app.svg?branch=main)](https://travis-ci.com/ps1312/map_app)
 
+### Architecture
+
+![Feed Loading Feature](map_app_architecture.png)
+
+
 ### BDD Specs:
 
 #### Narrative #1:
