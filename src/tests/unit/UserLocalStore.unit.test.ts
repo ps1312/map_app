@@ -15,6 +15,10 @@ class UserLocalStore {
   retrieve(): string | null {
     return this.store.getItem(UserLocalStore.localStorageKey)
   }
+
+  delete() {
+    this.store.removeItem(UserLocalStore.localStorageKey)
+  }
 }
 
 describe('UserLocalStore', () => {
@@ -42,6 +46,17 @@ describe('UserLocalStore', () => {
     sut.insert(latestUser)
 
     expect(sut.retrieve()).toStrictEqual(JSON.stringify(latestUser))
+  })
+
+  test('retrieves null after delete non empty store', () => {
+    const sut = new UserLocalStore(localStorage)
+    const latestUser = anyUser()
+
+    sut.insert(latestUser)
+    expect(sut.retrieve()).toStrictEqual(JSON.stringify(latestUser))
+
+    sut.delete()
+    expect(sut.retrieve()).toStrictEqual(null)
   })
 
   function anyUser(): User {
