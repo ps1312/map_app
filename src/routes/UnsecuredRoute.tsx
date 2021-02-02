@@ -1,12 +1,10 @@
 import { Route, Redirect, RouteProps } from "react-router-dom";
 
-interface UnsecuredRouteProps extends RouteProps {
-  component: any;
-  isLoggedIn: boolean;
-}
+import { UserLocalStore } from "../services/cache/UserLocalStore";
 
-const UnsecuredRoute = ({ component, isLoggedIn }: UnsecuredRouteProps) => (
-  !isLoggedIn ? <Route>{component}</Route> : <Redirect to="/" />
-)
+const UnsecuredRoute = (props: RouteProps) => {
+  const isLoggedIn = new UserLocalStore().retrieve() !== null
+  return !isLoggedIn ? <Route {...props} component={props.component} /> : <Redirect to="/" />
+}
 
 export default UnsecuredRoute;

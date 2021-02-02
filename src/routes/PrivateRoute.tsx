@@ -1,12 +1,10 @@
 import { Route, RouteProps, Redirect } from "react-router-dom";
 
-interface PrivateRouteProps extends RouteProps {
-  component: any;
-  isLoggedIn: boolean;
-}
+import { UserLocalStore } from "../services/cache/UserLocalStore";
 
-const PrivateRoute = ({ component, isLoggedIn }: PrivateRouteProps) => (
-  isLoggedIn ? <Route>{component}</Route> : <Redirect to="/login" />
-)
+const PrivateRoute = (props: RouteProps) => {
+  const isLoggedIn = new UserLocalStore().retrieve() !== null
+  return isLoggedIn ? <Route {...props} component={props.component} /> : <Redirect to="/login" />
+}
 
 export default PrivateRoute;
