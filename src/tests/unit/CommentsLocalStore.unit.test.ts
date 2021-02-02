@@ -19,6 +19,9 @@ class CommentsLocalStore {
 
     if (!currentComments) {
       localStorage.setItem(placeId, JSON.stringify([comment]))
+    } else {
+      const updatedComments = [...currentComments, comment]
+      localStorage.setItem(placeId, JSON.stringify(updatedComments))
     }
   }
 }
@@ -49,6 +52,22 @@ describe('CommentsLocalStore', () => {
 
     expect(comments).toHaveLength(1)
     expect(comments[0]).toStrictEqual(comment)
+  })
+
+  test('retrieve two inserted comments on same place_id delivers array with two comment elements in same order', () => {
+    const sut = new CommentsLocalStore()
+    const placeId = anyPlaceId()
+    const firstComment = anyComment()
+    const secondComment = anyComment()
+
+    sut.insert(placeId, firstComment)
+    sut.insert(placeId, secondComment)
+
+    const comments = sut.retrieve(placeId) as Comment[]
+
+    expect(comments).toHaveLength(2)
+    expect(comments[0]).toStrictEqual(firstComment)
+    expect(comments[1]).toStrictEqual(secondComment)
   })
 
   function anyComment(): Comment {
