@@ -9,15 +9,13 @@ interface UserStore {
 export class UserLocalStore implements UserStore {
   static localStorageKey = "user"
 
-  constructor(private readonly store: Storage) {}
-
   insert(user: User) {
     const userStringified = JSON.stringify(user)
-    this.store.setItem(UserLocalStore.localStorageKey, userStringified)
+    localStorage.setItem(UserLocalStore.localStorageKey, userStringified)
   }
 
   retrieve(): User | null {
-    const string = this.store.getItem(UserLocalStore.localStorageKey)
+    const string = localStorage.getItem(UserLocalStore.localStorageKey)
     const user = JSON.parse(string as string)
 
     if (user) return { ...user, updatedAt: new Date(user.updatedAt) }
@@ -26,6 +24,6 @@ export class UserLocalStore implements UserStore {
   }
 
   delete() {
-    this.store.removeItem(UserLocalStore.localStorageKey)
+    localStorage.removeItem(UserLocalStore.localStorageKey)
   }
 }
