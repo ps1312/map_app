@@ -4,14 +4,14 @@ type Comment = {
 }
 
 class CommentsLocalStore {
-  retrieve(placeId: string): Comment[] | null {
+  retrieve(placeId: string): Comment[] {
     const placeComments = localStorage.getItem(`${placeId}`)
 
     if (placeComments) {
       return JSON.parse(placeComments)
     }
 
-    return null
+    return []
   }
 
   insert(placeId: string, comment: Comment) {
@@ -36,10 +36,10 @@ describe('CommentsLocalStore', () => {
     expect(localStorage.length).toEqual(0)
   })
 
-  test('retrieve with place_id returns null on empty store', () => {
+  test('retrieve with place_id returns empty array on empty store', () => {
     const sut = new CommentsLocalStore()
 
-    expect(sut.retrieve(anyPlaceId())).toStrictEqual(null)
+    expect(sut.retrieve(anyPlaceId())).toStrictEqual([])
   })
 
   test('retrieve inserted comment on place_id key delivers array with one comment element', () => {
@@ -48,7 +48,7 @@ describe('CommentsLocalStore', () => {
     const comment = anyComment()
 
     sut.insert(placeId, comment)
-    const comments = sut.retrieve(placeId) as Comment[]
+    const comments = sut.retrieve(placeId)
 
     expect(comments).toHaveLength(1)
     expect(comments[0]).toStrictEqual(comment)
@@ -63,7 +63,7 @@ describe('CommentsLocalStore', () => {
     sut.insert(placeId, firstComment)
     sut.insert(placeId, secondComment)
 
-    const comments = sut.retrieve(placeId) as Comment[]
+    const comments = sut.retrieve(placeId)
 
     expect(comments).toHaveLength(2)
     expect(comments[0]).toStrictEqual(firstComment)
@@ -76,11 +76,11 @@ describe('CommentsLocalStore', () => {
     const comment = anyComment()
     sut.insert(anyPlaceId(), comment)
 
-    const firstRetrieve = sut.retrieve(placeId) as Comment[]
+    const firstRetrieve = sut.retrieve(placeId)
     expect(firstRetrieve).toHaveLength(1)
     expect(firstRetrieve[0]).toStrictEqual(comment)
 
-    const secondRetrieve = sut.retrieve(placeId) as Comment[]
+    const secondRetrieve = sut.retrieve(placeId)
     expect(secondRetrieve).toHaveLength(1)
     expect(secondRetrieve[0]).toStrictEqual(comment)
 
