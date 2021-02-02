@@ -33,18 +33,6 @@ describe('CommentsLocalStore', () => {
     expect(sut.retrieve(anyPlaceId())).toStrictEqual([])
   })
 
-  test('retrieve inserted comment on place_id key delivers array with one comment element', () => {
-    const sut = new CommentsLocalStore()
-    const placeId = anyPlaceId()
-    const comment = anyComment()
-
-    sut.insert(placeId, comment)
-    const comments = sut.retrieve(placeId)
-
-    expect(comments).toHaveLength(1)
-    expect(comments[0]).toStrictEqual(comment)
-  })
-
   test('retrieve two inserted comments on same place_id delivers array with two comment elements in same order', () => {
     const sut = new CommentsLocalStore()
     const placeId = anyPlaceId()
