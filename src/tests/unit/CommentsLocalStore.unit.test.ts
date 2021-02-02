@@ -1,21 +1,4 @@
-type Comment = {
-  content: string;
-  score: number;
-}
-
-class CommentsLocalStore {
-  retrieve(placeId: string): Comment[] {
-    const placeComments = localStorage.getItem(`${placeId}`)
-    if (placeComments) return JSON.parse(placeComments)
-    return []
-  }
-
-  insert(placeId: string, comment: Comment) {
-    const currentComments = this.retrieve(placeId)
-    const updatedComments = [...currentComments, comment]
-    localStorage.setItem(placeId, JSON.stringify(updatedComments))
-  }
-}
+import { CommentsLocalStore, Comment } from "../../services/cache/CommentsLocalStore"
 
 describe('CommentsLocalStore', () => {
   afterEach(() => {
@@ -73,5 +56,3 @@ describe('CommentsLocalStore', () => {
     return "ChIJi0DllG8ZqwcRpuO9gvcOgOU"
   }
 })
-
-export {}
