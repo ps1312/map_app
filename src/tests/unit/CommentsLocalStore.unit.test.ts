@@ -6,23 +6,14 @@ type Comment = {
 class CommentsLocalStore {
   retrieve(placeId: string): Comment[] {
     const placeComments = localStorage.getItem(`${placeId}`)
-
-    if (placeComments) {
-      return JSON.parse(placeComments)
-    }
-
+    if (placeComments) return JSON.parse(placeComments)
     return []
   }
 
   insert(placeId: string, comment: Comment) {
     const currentComments = this.retrieve(placeId)
-
-    if (!currentComments) {
-      localStorage.setItem(placeId, JSON.stringify([comment]))
-    } else {
-      const updatedComments = [...currentComments, comment]
-      localStorage.setItem(placeId, JSON.stringify(updatedComments))
-    }
+    const updatedComments = [...currentComments, comment]
+    localStorage.setItem(placeId, JSON.stringify(updatedComments))
   }
 }
 
