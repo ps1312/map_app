@@ -7,18 +7,18 @@ describe('UserLocalStore', () => {
   })
 
   test('init does not have any side effect', () => {
-    new UserLocalStore(localStorage)
+    new UserLocalStore()
     expect(localStorage.length).toEqual(0)
   })
 
   test('delivers null result on empty local store', () => {
-    const sut = new UserLocalStore(localStorage)
+    const sut = new UserLocalStore()
     const result = sut.retrieve()
     expect(result).toStrictEqual(null)
   })
 
   test('retrieves last inserted user after insert twice', () => {
-    const sut = new UserLocalStore(localStorage)
+    const sut = new UserLocalStore()
 
     sut.insert(anyUser())
 
@@ -29,7 +29,7 @@ describe('UserLocalStore', () => {
   })
 
   test('retrieves null after delete non empty store', () => {
-    const sut = new UserLocalStore(localStorage)
+    const sut = new UserLocalStore()
     const latestUser = anyUser()
 
     sut.insert(latestUser)
@@ -40,7 +40,7 @@ describe('UserLocalStore', () => {
   })
 
   test('does not have side effects on deleting empty store', () => {
-    const sut = new UserLocalStore(localStorage)
+    const sut = new UserLocalStore()
 
     sut.delete()
     expect(sut.retrieve()).toStrictEqual(null)
@@ -50,7 +50,7 @@ describe('UserLocalStore', () => {
   })
 
   test('retrieve twice does not have side effects', () => {
-    const sut = new UserLocalStore(localStorage)
+    const sut = new UserLocalStore()
     const latestUser = anyUser()
 
     sut.insert(latestUser)
