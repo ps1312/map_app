@@ -1,6 +1,12 @@
 import { User } from "../../models/User"
 
-export class UserLocalStore {
+interface UserStore {
+  insert(user: User): void;
+  retrieve(): User | null;
+  delete(): void;
+}
+
+export class UserLocalStore implements UserStore {
   static localStorageKey = "user"
 
   constructor(private readonly store: Storage) {}
