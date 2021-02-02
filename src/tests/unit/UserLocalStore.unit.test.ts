@@ -59,6 +59,16 @@ describe('UserLocalStore', () => {
     expect(sut.retrieve()).toStrictEqual(null)
   })
 
+  test('does not have side effects on deleting empty store', () => {
+    const sut = new UserLocalStore(localStorage)
+
+    sut.delete()
+    expect(sut.retrieve()).toStrictEqual(null)
+
+    sut.delete()
+    expect(sut.retrieve()).toStrictEqual(null)
+  })
+
   function anyUser(): User {
     return {
       id: Math.random(),
