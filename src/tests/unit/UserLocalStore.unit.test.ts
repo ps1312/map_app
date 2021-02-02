@@ -12,8 +12,13 @@ class UserLocalStore {
     this.store.setItem(UserLocalStore.localStorageKey, userStringified)
   }
 
-  retrieve(): string | null {
-    return this.store.getItem(UserLocalStore.localStorageKey)
+  retrieve(): User | null {
+    const string = this.store.getItem(UserLocalStore.localStorageKey)
+    const user = JSON.parse(string as string)
+
+    if (user) return { ...user, updatedAt: new Date(user.updatedAt) }
+
+    return null
   }
 
   delete() {
@@ -37,7 +42,7 @@ describe('UserLocalStore', () => {
     expect(result).toStrictEqual(null)
   })
 
-  test('retrieves last inserted user string after insert twice', () => {
+  test('retrieves last inserted user after insert twice', () => {
     const sut = new UserLocalStore(localStorage)
 
     sut.insert(anyUser())
@@ -45,7 +50,7 @@ describe('UserLocalStore', () => {
     const latestUser = anyUser()
     sut.insert(latestUser)
 
-    expect(sut.retrieve()).toStrictEqual(JSON.stringify(latestUser))
+    expect(sut.retrieve()).toStrictEqual(latestUser)
   })
 
   test('retrieves null after delete non empty store', () => {
@@ -53,7 +58,7 @@ describe('UserLocalStore', () => {
     const latestUser = anyUser()
 
     sut.insert(latestUser)
-    expect(sut.retrieve()).toStrictEqual(JSON.stringify(latestUser))
+    expect(sut.retrieve()).toStrictEqual(latestUser)
 
     sut.delete()
     expect(sut.retrieve()).toStrictEqual(null)
@@ -74,8 +79,8 @@ describe('UserLocalStore', () => {
     const latestUser = anyUser()
 
     sut.insert(latestUser)
-    expect(sut.retrieve()).toStrictEqual(JSON.stringify(latestUser))
-    expect(sut.retrieve()).toStrictEqual(JSON.stringify(latestUser))
+    expect(sut.retrieve()).toStrictEqual(latestUser)
+    expect(sut.retrieve()).toStrictEqual(latestUser)
   })
 
   function anyUser(): User {
