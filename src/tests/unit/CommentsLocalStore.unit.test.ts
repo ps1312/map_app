@@ -70,6 +70,22 @@ describe('CommentsLocalStore', () => {
     expect(comments[1]).toStrictEqual(secondComment)
   })
 
+  test('retrieve twice does not have any side effects', () => {
+    const sut = new CommentsLocalStore()
+    const placeId = anyPlaceId()
+    const comment = anyComment()
+    sut.insert(anyPlaceId(), comment)
+
+    const firstRetrieve = sut.retrieve(placeId) as Comment[]
+    expect(firstRetrieve).toHaveLength(1)
+    expect(firstRetrieve[0]).toStrictEqual(comment)
+
+    const secondRetrieve = sut.retrieve(placeId) as Comment[]
+    expect(secondRetrieve).toHaveLength(1)
+    expect(secondRetrieve[0]).toStrictEqual(comment)
+
+  })
+
   function anyComment(): Comment {
     return { content: `text ${Math.random()}`, score: 5 };
   }
