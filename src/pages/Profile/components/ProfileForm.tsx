@@ -1,5 +1,5 @@
 import { Formik, Field, FieldProps } from 'formik';
-import { FormControl, FormLabel, Input, FormErrorMessage, Tooltip, Box } from "@chakra-ui/react";
+import { FormControl, FormLabel, Input, FormErrorMessage, Tooltip, Box, Alert, AlertIcon } from "@chakra-ui/react";
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 import { SubmitProfileEditButton } from "./SubmitProfileEditButton"
@@ -9,6 +9,7 @@ import { validateRequired } from '../../../services/validations/requiredField';
 type ProfileFormProps = {
   initialValues: EditProfileFormValues;
   isLoading: boolean;
+  failed: boolean;
   onSubmit: ((values: EditProfileFormValues) => void);
 }
 
@@ -18,13 +19,21 @@ export type EditProfileFormValues = {
   last_name: string;
 }
 
-const ProfileForm = ({ initialValues, onSubmit, isLoading }: ProfileFormProps) => {
+const ProfileForm = ({ initialValues, onSubmit, isLoading, failed }: ProfileFormProps) => {
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit}>
       {(props) => {
         const isValid = props.isValid === true && props.dirty === true
         return (
           <>
+          {failed &&
+            <Alert status="error">
+              <AlertIcon />
+              Something went wrong.
+            </Alert>
+          }
+
+
           <Field name="email" validate={validateEmail}>
               {({ field, form }: FieldProps<string>) => {
                 const isInvalid = form.errors.email !== undefined && form.touched.email !== undefined

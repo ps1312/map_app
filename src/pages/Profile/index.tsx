@@ -37,43 +37,47 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
     this.setState({ isLoading: true }, async () => await this.loadUser());
   }
 
+  persistUserLocally = (apiUser: User): User => {
+    const { cache } = this.props
+    const currentUser = cache.retrieve()!
+    const updatedUser: AuthenticatedUser = {
+      user: { ...apiUser },
+      token: currentUser.token
+    }
+    cache.insert(updatedUser)
+
+    return updatedUser.user;
+  }
+
   loadUser = async () => {
     const { loader, cache } = this.props
     const currentUser = cache.retrieve()!
 
     try {
       const apiUser = await loader.find(currentUser.user.email!)
-      const updatedUser: AuthenticatedUser = {
-        user: { ...apiUser },
-        token: currentUser.token
-      }
-      cache.insert(updatedUser)
-      this.setState({ isLoading: false, loadedUser: updatedUser.user })
+      const updatedUser = this.persistUserLocally(apiUser)
+      this.setState({ isLoading: false, loadedUser: updatedUser })
     } catch (error) {
-      this.setState({ failed: true })
+      this.setState({ isLoading: false, failed: true })
     }
   }
 
   updateUser = async (values: EditProfileFormValues) => {
-    this.setState({ isUpdatingUser: true })
-    const { updater, cache } = this.props;
-    const currentUser = cache.retrieve()!
+    this.setState({ isUpdatingUser: true, failed: false })
+    const { updater } = this.props;
+    const { loadedUser } = this.state;
 
     try {
-      const apiUser = await updater.update(currentUser.user.id!, values)
-      const updatedUser: AuthenticatedUser = {
-        user: { ...apiUser },
-        token: currentUser.token
-      }
-      cache.insert(updatedUser)
-      this.setState({ isUpdatingUser: false, loadedUser: updatedUser.user })
+      const apiUser = await updater.update(loadedUser?.id!, values)
+      const updatedUser = this.persistUserLocally(apiUser)
+      this.setState({ isUpdatingUser: false, loadedUser: updatedUser })
     } catch {
-      this.setState({ isUpdatingUser: false })
+      this.setState({ isUpdatingUser: false, failed: true })
     }
   }
 
   render() {
-    const { isLoading, isUpdatingUser, loadedUser } = this.state;
+    const { isLoading, isUpdatingUser, loadedUser, failed } = this.state;
 
     const initialFormValues = {
       email: loadedUser?.email || "",
@@ -89,6 +93,7 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
           <Spinner alignSelf="center" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
         ) : (
           <ProfileForm
+            failed={failed}
             isLoading={isUpdatingUser}
             initialValues={initialFormValues}
             onSubmit={this.updateUser}
