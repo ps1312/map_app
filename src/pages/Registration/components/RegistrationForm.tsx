@@ -1,9 +1,10 @@
 import { Formik, Field, FieldProps } from 'formik';
-import { FormControl, FormLabel, Input, FormErrorMessage } from "@chakra-ui/react";
+import { FormControl, FormLabel, Input, FormErrorMessage, Alert, AlertIcon } from "@chakra-ui/react";
 
 import { SubmitRegistrationButton } from "./SubmitRegistationButton";
 
 type RegistrationFormProps = {
+  failed: boolean;
   isLoading: boolean;
   onSubmit: ((values: RegistrationFormValues) => void);
 }
@@ -14,6 +15,7 @@ export type RegistrationFormValues = {
 }
 
 export const RegistrationForm = ({
+  failed,
   isLoading,
   onSubmit,
 } : RegistrationFormProps) => {
@@ -26,8 +28,16 @@ export const RegistrationForm = ({
     <Formik initialValues={initialValues} onSubmit={(values) => onSubmit(values)}>
       {(props) => {
         const isValid = props.isValid === true && props.dirty === true
+
         return (
           <>
+            {failed &&
+              <Alert status="error">
+                <AlertIcon />
+                Something went wrong.
+              </Alert>
+            }
+
             <Field name="email" validate={validateEmail}>
               {({ field, form }: FieldProps<string>) => {
                 const isInvalid = form.errors.email !== undefined && form.touched.email !== undefined
