@@ -62,8 +62,8 @@ describe('RegistrationPage', () => {
 
     await simulateTyping("Email address", userRegisterModel.email)
     await simulateTyping("Password", userRegisterModel.password)
+    await submitForm()
 
-    await waitFor(() => fireEvent.click(screen.getByRole('button')))
     expect(spy.lastUserRegisterModel).not.toBeUndefined()
     expect(spy.lastUserRegisterModel).toStrictEqual(userRegisterModel)
   })
@@ -72,5 +72,9 @@ describe('RegistrationPage', () => {
     const input = screen.getByLabelText(label)
     await waitFor(() => fireEvent.change(input, { target: { value } }));
     await waitFor(() => fireEvent.blur(input));
+  }
+
+  async function submitForm() {
+    await waitFor(() => fireEvent.click(screen.getByRole('button')))
   }
 })
