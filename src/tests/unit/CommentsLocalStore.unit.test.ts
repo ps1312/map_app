@@ -49,7 +49,7 @@ describe('CommentsLocalStore', () => {
   })
 
   function anyComment(): Comment {
-    return { content: `text ${Math.random()}`, score: 5 };
+    return { content: `text ${Math.random()}`, score: 5, author: "any@email.com" };
   }
 
   function anyPlaceId(): string {

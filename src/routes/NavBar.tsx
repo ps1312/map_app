@@ -18,17 +18,18 @@ const NavBar = ({ cache }: NavBarProps) => {
   }
 
   return (
-    <Flex p="3" bg="white" borderBottom="1px solid" borderColor="gray.300" position="fixed" width="100vw">
+    <Flex zIndex={4} p="3" bg="white" borderBottom="1px solid" borderColor="gray.300" position="fixed" top="0" width="100%">
       <Box p="2">
         <Heading size="md">Map App</Heading>
       </Box>
       <Spacer />
-      <Box>
+      <Box pr="4">
         <Menu>
           <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
             {currentUser?.user.email}
           </MenuButton>
           <MenuList>
+            <MenuItem onClick={() => history.push("/")}>Map</MenuItem>
             <MenuItem onClick={() => history.push("/profile")}>Edit Profile</MenuItem>
             <MenuItem onClick={logout}>Logout</MenuItem>
           </MenuList>

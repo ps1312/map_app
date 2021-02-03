@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Heading, Container, Spinner } from "@chakra-ui/react";
+import { Heading, Container, Spinner, Box } from "@chakra-ui/react";
 
 import ProfileForm, { EditProfileFormValues } from "./components/ProfileForm";
 import { GetUserProfile } from "../../models/GetUserProfile";
@@ -86,20 +86,23 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
     }
 
     return (
-      <Container border="1px solid" borderColor="gray.300" padding="10" borderRadius="lg" mt="30" display="flex" flexDirection="column">
-        <Heading alignSelf="center" size="lg" mb="10">Update your account</Heading>
-        
-        {isLoading ? (
-          <Spinner alignSelf="center" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
-        ) : (
-          <ProfileForm
-            failed={failed}
-            isLoading={isUpdatingUser}
-            initialValues={initialFormValues}
-            onSubmit={this.updateUser}
-          />
-        )}
-      </Container>
+      <>
+        <Box h="100px" />
+        <Container border="1px solid" borderColor="gray.300" padding="10" borderRadius="lg" display="flex" flexDirection="column">
+          <Heading alignSelf="center" size="lg" mb="10">Update your account</Heading>
+          
+          {isLoading ? (
+            <Spinner alignSelf="center" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+          ) : (
+            <ProfileForm
+              failed={failed}
+              isLoading={isUpdatingUser}
+              initialValues={initialFormValues}
+              onSubmit={this.updateUser}
+            />
+          )}
+        </Container>
+      </>
     )
   }
 }
