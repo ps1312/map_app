@@ -6,13 +6,26 @@ import PrivateRoute from "./routes/PrivateRoute";
 import UnsecuredRoute from "./routes/UnsecuredRoute";
 import HomePage from "./pages/Home";
 import RegistrationPage from "./pages/Registration";
+import { RemoteUserRegister } from "./services/register/RemoteUserRegister";
+import { FetchHTTPClient } from "./services/http/FetchHTTPClient";
+
+const makeRemoteRegistration = () => {
+  const fetch = window.fetch.bind(window);
+  const url = new URL("https://reqres.in/api/register")
+  const client = new FetchHTTPClient(fetch)
+  return new RemoteUserRegister(url, client)
+}
+
+const makeRegistrationPage = () => {
+  return <RegistrationPage registration={makeRemoteRegistration()} />
+}
 
 function App() {
   return (
     <ChakraProvider>
       <Router>
         <Switch>
-          <UnsecuredRoute path="/register" component={RegistrationPage}/>
+          <UnsecuredRoute path="/register" component={() => makeRegistrationPage()}/>
           <UnsecuredRoute path="/login" component={RegistrationPage}/>
           <PrivateRoute path="/" component={HomePage} />
         </Switch>

@@ -3,15 +3,30 @@ import { Heading, Container } from "@chakra-ui/react";
 
 import { RegistrationForm } from "./components/RegistrationForm";
 import { SubmitRegistrationButton } from "./components/SubmitRegistationButton";
+import { UserRegister, UserRegisterModel } from "../../models/UserRegister";
 
-const RegistrationPage = () => {
-  const [isLoading] = useState(false);
+type RegistrationPageProps = {
+  registration: UserRegister
+}
+
+const RegistrationPage = ({ registration }: RegistrationPageProps) => {
+  const [isLoading, setIsLoading] = useState(false);
 
   const [email, setEmail] = useState("");
   const handleEmailChange = (email: string) => setEmail(email);
 
   const [password, setPassword] = useState("");
   const handlePasswordChange = (password: string) => setPassword(password);
+
+  const register = async () => {
+    setIsLoading(true)
+    try {
+      const userRegisterModel: UserRegisterModel = { email, password }
+      await registration.register(userRegisterModel)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <Container bg={'#' + ((Math.random() * 0xffffff) << 0).toString(16)} border="1px solid" borderColor="gray.300" padding="10" borderRadius="lg" mt="120" display="flex" flexDirection="column">
@@ -26,7 +41,7 @@ const RegistrationPage = () => {
 
       <SubmitRegistrationButton
         isLoading={isLoading}
-        onSubmit={() => {}}
+        onSubmit={register}
       />
     </Container>
   )
