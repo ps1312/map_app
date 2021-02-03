@@ -31,14 +31,22 @@ describe('ProfilePage', () => {
     expect(screen.getByText('Loading...')).toBeVisible()
   })
 
-  test('should render email field with loaded email' , async () => {
+  test('should render Profile edit form fields with initial values' , async () => {
     const user = anyUserWithEmail("any-email@mail.com")
     render(<ProfilePage loader={new GetUserProfileSpy()} cache={new UserLocalStoreSpy()} />)
 
     await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
-    const input = await screen.findByLabelText('Email address')
-    expect(input).toBeVisible()
-    expect(input).toHaveValue(user.email)
+    const email = screen.getByLabelText('Email address')
+    expect(email).toBeVisible()
+    expect(email).toHaveValue(user.email)
+
+    const firstName = screen.getByLabelText('First name')
+    expect(firstName).toBeVisible()
+    expect(firstName).toHaveValue(user.first_name)
+
+    const lastName = screen.getByLabelText('Last name')
+    expect(lastName).toBeVisible()
+    expect(lastName).toHaveValue(user.last_name)
   })
 })
 

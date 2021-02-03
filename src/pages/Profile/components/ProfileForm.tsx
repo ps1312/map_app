@@ -2,6 +2,8 @@ import { Formik, Field, FieldProps } from 'formik';
 import { FormControl, FormLabel, Input, FormErrorMessage } from "@chakra-ui/react";
 
 import { SubmitProfileEditButton } from "./SubmitProfileEditButton"
+import { validateEmail } from '../../../services/validations/validateEmail';
+import { validateRequired } from '../../../services/validations/requiredField';
 
 type ProfileFormProps = {
   initialValues: EditProfileFormValues;
@@ -9,6 +11,7 @@ type ProfileFormProps = {
 
 export type EditProfileFormValues = {
   email: string;
+  first_name: string;
 }
 
 const ProfileForm = ({ initialValues }: ProfileFormProps) => {
@@ -30,6 +33,32 @@ const ProfileForm = ({ initialValues }: ProfileFormProps) => {
               }}
             </Field>
 
+            <Field name="first_name" validate={validateRequired}>
+              {({ field, form }: FieldProps<string>) => {
+                const isInvalid = form.errors.first_name !== undefined && form.touched.first_name !== undefined
+                return (
+                  <FormControl mt={5} isInvalid={isInvalid}>
+                    <FormLabel htmlFor="first_name">First name</FormLabel>
+                    <Input {...field} id="first_name" type="first_name" placeholder="Please, enter your first name" />
+                    <FormErrorMessage>Invalid first name</FormErrorMessage>
+                  </FormControl>
+                )
+              }}
+            </Field>
+
+            <Field name="last_name" validate={validateRequired}>
+              {({ field, form }: FieldProps<string>) => {
+                const isInvalid = form.errors.last_name !== undefined && form.touched.last_name !== undefined
+                return (
+                  <FormControl mt={5} isInvalid={isInvalid}>
+                    <FormLabel htmlFor="last_name">Last name</FormLabel>
+                    <Input {...field} id="last_name" type="last_name" placeholder="Please, enter your last name" />
+                    <FormErrorMessage>Invalid last name</FormErrorMessage>
+                  </FormControl>
+                )
+              }}
+            </Field>
+
             <SubmitProfileEditButton isLoading={false} disabled={true} onSubmit={() => {}} />
           </>
         )
@@ -39,13 +68,3 @@ const ProfileForm = ({ initialValues }: ProfileFormProps) => {
 }
 
 export default ProfileForm
-
-function validateEmail(value: string) {
-  let error;
-  if (!value) {
-    error = 'Required';
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-    error = 'Invalid email address';
-  }
-  return error;
-}

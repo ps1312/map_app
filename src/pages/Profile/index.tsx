@@ -51,6 +51,12 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
   render() {
     const { isLoading, loadedUser } = this.state;
 
+    const initialFormValues = {
+      email: loadedUser?.email || "",
+      first_name: loadedUser?.first_name || "",
+      last_name: loadedUser?.last_name || "",
+    }
+
     return (
       <Container border="1px solid" borderColor="gray.300" padding="10" borderRadius="lg" mt="30" display="flex" flexDirection="column">
         <Heading alignSelf="center" size="lg" mb="10">Update your account</Heading>
@@ -58,7 +64,7 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
         {isLoading ? (
           <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
         ) : (
-          <ProfileForm initialValues={{ email: loadedUser?.email || "" }} />
+          <ProfileForm initialValues={initialFormValues} />
         )}
       </Container>
     )
