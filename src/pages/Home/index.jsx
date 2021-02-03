@@ -84,8 +84,6 @@ const HomePage = ({ favouritesCache, commentsCache, userCache }) => {
     setComments(commentsCache.retrieve(placeId))
   }
 
-  console.log(position)
-
   return (
     <Box height="90vh" paddingTop="10vh" width="50vw" display="flex" justifyContent="center">
 

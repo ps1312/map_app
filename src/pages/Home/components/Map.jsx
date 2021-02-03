@@ -4,7 +4,6 @@ import { Box } from "@chakra-ui/react"
 import Pin from './Pin';
 
 const Map = (props) => {
-  console.log(props.position)
   return (
     <Box bg="gray.100" borderRadius={2} overflow="hidden" right="5" bottom="1" width="50%" height="90%" position="fixed">
       {props.position &&
@@ -19,6 +18,7 @@ const Map = (props) => {
           {props.places.map((place, index) => {
             return (
               <Pin
+                name={place.name}
                 key={index}
                 lat={place.geometry.location.lat()}
                 lng={place.geometry.location.lng()}
