@@ -12,6 +12,7 @@ export const SubmitRegistrationButton = ({
   <Button
     mt={10}
     w="140px"
+    disabled={true}
     colorScheme="blue"
     onClick={onSubmit}
     alignSelf="flex-end"
