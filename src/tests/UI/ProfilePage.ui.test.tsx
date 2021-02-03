@@ -61,30 +61,35 @@ describe('ProfilePage', () => {
   })
 
   test('submit button with valid fields should request user update with correct params', async () => {
-    const spy = renderSUT()
-    const updatedUser: UserEditModel = {
-      email: "valid@mail.com",
-      first_name: "updatedFristName",
-      last_name: "updatedLastName",
-    }
+    const userUpdateSpy = renderSUT()
+    const updatedUser = anyEditUserModel()
 
     await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
-    await simulateTyping("Email address", updatedUser.email)
-    await simulateTyping("First name", updatedUser.first_name)
-    await simulateTyping("Last name", updatedUser.last_name)
+    await simulateTyping("Email address", updatedUser.email!)
+    await simulateTyping("First name", updatedUser.first_name!)
+    await simulateTyping("Last name", updatedUser.last_name!)
     await submitForm()
 
-    expect(spy.lastUpdatedUser).toStrictEqual(updatedUser)
+    expect(userUpdateSpy.lastUpdatedUser).toStrictEqual(updatedUser)
   })
 
-  function renderSUT(user: User = anyUserWithEmail("any-email@mail.com")): EditUserProfileSpy {
+  function renderSUT(
+    user: User = anyUserWithEmail("any-email@mail.com"),
+    editUserModel: UserEditModel = anyEditUserModel(),
+    ): EditUserProfileSpy {
     const userUpdateSpy = new EditUserProfileSpy()
+    userUpdateSpy.lastUpdatedUser = editUserModel
 
     const getUserSpy = new GetUserProfileSpy()
     getUserSpy.lastUserCalled = user
+
     render(<ProfilePage loader={getUserSpy} updater={userUpdateSpy} cache={new UserLocalStoreSpy()} />)
 
     return userUpdateSpy;
+  }
+
+  function anyEditUserModel(): UserEditModel {
+    return { email: "updated@mail.com", first_name: "updatedFristName", last_name: "updatedLastName" }
   }
 
   function anyUserWithEmail(email: string): User {
