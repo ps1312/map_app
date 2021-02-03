@@ -25,7 +25,7 @@ const RegistrationPage = ({ registration }: RegistrationPageProps) => {
 
   return (
     <Container border="1px solid" borderColor="gray.300" padding="10" borderRadius="lg" mt="120" display="flex" flexDirection="column">
-      <Heading alignSelf="center" size="2xl" mb="10">Map App</Heading>
+      <Heading alignSelf="center" size="lg" mb="10">Create your account</Heading>
 
       <RegistrationForm
         failed={failed}
