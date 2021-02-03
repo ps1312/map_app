@@ -1,7 +1,8 @@
 import React, {  useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
-import GoogleMapReact from 'google-map-react';
-import { Box } from "@chakra-ui/react";
+import { Box, Flex, Image, Badge } from "@chakra-ui/react"
+import { StarIcon } from '@chakra-ui/icons'
+import PlacesList from "./components/PlacesList.jsx";
+import Map from "./components/Map.jsx";
 
 const HomePage = (props) => {
   const [places, setPlaces] = useState([])
@@ -22,33 +23,81 @@ const HomePage = (props) => {
   }
 
   return (
-    <Box display="flex" justifyContent="center">
-      <ul>
-        {places.map((place, index) => {
-          return (
-            <div key={index}>
-              <span>{place.name}</span>
-              <span>{place.vicinity}</span>
-              <span>{place.place_id}</span>
-              <span>{place.geometry.location.lat()}</span>
-              <span>{place.geometry.location.lng()}</span>
-              <br />
-            </div>
-          )
-        })}
-      </ul>
-      <div style={{ height: '40vh', width: '40vw' }}>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_PLACES_KEY, libraries: ['places'] }}
-          defaultCenter={[34.0522, -118.2437]}
-          defaultZoom={10}
-          yesIWantToUseGoogleMapApiInternals
-          onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-        >
-        </GoogleMapReact>
-      </div>
+    <Box height="90vh" paddingTop="10vh" width="50vw" display="flex" justifyContent="center">
+
+      <PlacesList places={places} />
+
+      <Map places={places} handleApiLoaded={handleApiLoaded} />
+
     </Box>
   )
 }
 
 export default HomePage;
+
+function AirbnbExample() {
+  const property = {
+    imageUrl: "https://bit.ly/2Z4KKcF",
+    imageAlt: "Rear view of modern home with pool",
+    beds: 3,
+    baths: 2,
+    title: "Modern home in city center in the heart of historic Los Angeles",
+    formattedPrice: "$1,900.00",
+    reviewCount: 34,
+    rating: 4,
+  }
+
+  return (
+    <Box width="100%" borderWidth="1px" borderRadius="lg" overflow="hidden">
+      <Image src={property.imageUrl} alt={property.imageAlt} />
+
+      <Box p="6">
+        <Box d="flex" alignItems="baseline">
+          <Badge borderRadius="full" px="2" colorScheme="teal">
+            New
+          </Badge>
+          <Box
+            color="gray.500"
+            fontWeight="semibold"
+            letterSpacing="wide"
+            fontSize="xs"
+            textTransform="uppercase"
+            ml="2"
+          >
+            {property.beds} beds &bull; {property.baths} baths
+          </Box>
+        </Box>
+
+        <Box
+          mt="1"
+          fontWeight="semibold"
+          as="h4"
+          lineHeight="tight"
+          isTruncated
+        >
+          {property.title}
+        </Box>
+
+        <Box>
+          <Box as="span" color="gray.600" fontSize="sm">
+          {property.formattedPrice} / wk
+          </Box>
+        </Box>
+
+        <Box d="flex" mt="2" alignItems="center">
+          {Array(5)
+            .fill("")
+            .map((_, i) => (
+              <StarIcon
+                key={i}
+                color={i < property.rating ? "teal.500" : "gray.300"}
+              />
+            ))}
+          <Box as="span" ml="2" color="gray.600" fontSize="sm">
+            {property.reviewCount} reviews
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  )
+}
