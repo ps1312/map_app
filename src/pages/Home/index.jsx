@@ -1,5 +1,5 @@
 import React, {  useState } from "react";
-import { Box } from "@chakra-ui/react"
+import { Box, Spinner } from "@chakra-ui/react"
 import PlacesList from "./components/PlacesList.jsx";
 import Map from "./components/Map.jsx";
 
@@ -24,7 +24,18 @@ const HomePage = (props) => {
   return (
     <Box height="90vh" paddingTop="10vh" width="50vw" display="flex" justifyContent="center">
 
-      <PlacesList places={places} />
+      {places.length > 0 ? (
+        <PlacesList places={places} />
+      ) : (
+        <Spinner
+          alignSelf="center"
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+      )}
 
       <Map places={places} handleApiLoaded={handleApiLoaded} />
 
