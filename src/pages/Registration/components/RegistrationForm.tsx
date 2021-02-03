@@ -2,6 +2,8 @@ import { Formik, Field, FieldProps } from 'formik';
 import { FormControl, FormLabel, Input, FormErrorMessage, Alert, AlertIcon } from "@chakra-ui/react";
 
 import { SubmitRegistrationButton } from "./SubmitRegistationButton";
+import { validateRequired } from '../../../services/validations/requiredField';
+import { validateEmail } from '../../../services/validations/validateEmail';
 
 type RegistrationFormProps = {
   failed: boolean;
@@ -25,7 +27,7 @@ export const RegistrationForm = ({
   }
 
   return (
-    <Formik initialValues={initialValues} onSubmit={(values) => onSubmit(values)}>
+    <Formik initialValues={initialValues} onSubmit={onSubmit}>
       {(props) => {
         const isValid = props.isValid === true && props.dirty === true
 
@@ -65,7 +67,7 @@ export const RegistrationForm = ({
             </Field>
 
             <SubmitRegistrationButton
-              disabled={!isValid}
+              disabled={!isValid || isLoading}
               isLoading={isLoading}
               onSubmit={props.handleSubmit}
             />
@@ -74,22 +76,4 @@ export const RegistrationForm = ({
       }}
     </Formik>
   )
-}
-
-function validateRequired(value: string) {
-  let error;
-  if (!value) {
-    error = 'Required';
-  }
-  return error;
-}
-
-function validateEmail(value: string) {
-  let error;
-  if (!value) {
-    error = 'Required';
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-    error = 'Invalid email address';
-  }
-  return error;
 }

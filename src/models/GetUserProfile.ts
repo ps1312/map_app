@@ -1,5 +1,5 @@
 import { User } from "./User";
 
 export interface GetUserProfile {
-  load(userId: number): Promise<User>
+  find(email: string): Promise<User>
 }

@@ -1,18 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
-import { AuthenticatedUser } from '../../models/AuthenticatedUser'
-import { UserRegister, UserRegisterModel } from '../../models/UserRegister'
+import { UserRegisterModel } from '../../models/UserRegister'
 import RegistrationPage from '../../pages/Registration/index'
 import { UserLocalStore } from '../../services/cache/UserLocalStore'
-
-class UserRegisterSpy implements UserRegister {
-  lastUserRegisterModel?: UserRegisterModel
-
-  async register(userRegisterModel: UserRegisterModel): Promise<AuthenticatedUser> {
-    this.lastUserRegisterModel = userRegisterModel
-    return { user: { id: 4 }, token: "any-token" }
-  }
-}
+import { simulateTyping, submitForm } from './helpers/SharedHelpers'
+import { UserRegisterSpy } from './helpers/UserRegisterSpy'
 
 describe('RegistrationPage', () => {
   test('submit button should be disabled on empty formulary', async () => {
@@ -69,13 +61,16 @@ describe('RegistrationPage', () => {
     expect(spy.lastUserRegisterModel).toStrictEqual(userRegisterModel)
   })
 
-  async function simulateTyping(label: string, value: string): Promise<void> {
-    const input = screen.getByLabelText(label)
-    await waitFor(() => fireEvent.change(input, { target: { value } }));
-    await waitFor(() => fireEvent.blur(input));
-  }
+  test('should display error message on failure', async () => {
+    const spy = new UserRegisterSpy()
+    render(<RegistrationPage registration={spy} cache={new UserLocalStore()} />)
 
-  async function submitForm() {
-    await waitFor(() => fireEvent.click(screen.getByRole('button')))
-  }
+    const userRegisterModel: UserRegisterModel = { email: "valid@email.com", password: "any-password" }
+
+    await simulateTyping("Email address", userRegisterModel.email)
+    await simulateTyping("Password", userRegisterModel.password)
+    await submitForm()
+
+    expect(screen.getByText("Something went wrong.")).toBeVisible()
+  })
 })

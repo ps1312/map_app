@@ -1,18 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
-import { AuthenticationToken } from '../../models/AuthenticationToken'
-import { UserLogin, UserLoginModel } from '../../models/UserLogin'
+import { UserLoginModel } from '../../models/UserLogin'
 import LoginPage from '../../pages/Login/index'
 import { UserLocalStore } from '../../services/cache/UserLocalStore'
-
-class UserLoginSpy implements UserLogin {
-  lastUserLoginModel?: UserLoginModel
-
-  async login(userLoginModel: UserLoginModel): Promise<AuthenticationToken> {
-    this.lastUserLoginModel = userLoginModel
-    return { token: "any-token" }
-  }
-}
+import { simulateTyping, submitForm } from './helpers/SharedHelpers'
+import { UserLoginSpy } from './helpers/UserLoginSpy'
 
 describe('LoginPage', () => {
   test('submit button should be disabled on empty formulary', async () => {
@@ -55,7 +47,7 @@ describe('LoginPage', () => {
     expect(button).not.toHaveAttribute('disabled')
   })
 
-  test.only('submit should call login with correct values', async () => {
+  test('submit should call login with correct values', async () => {
     const spy = new UserLoginSpy()
     render(<LoginPage authentication={spy} cache={new UserLocalStore()} />)
 
@@ -69,13 +61,17 @@ describe('LoginPage', () => {
     expect(spy.lastUserLoginModel).toStrictEqual(userLoginModel)
   })
 
-  async function simulateTyping(label: string, value: string): Promise<void> {
-    const input = screen.getByLabelText(label)
-    await waitFor(() => fireEvent.change(input, { target: { value } }));
-    await waitFor(() => fireEvent.blur(input));
-  }
 
-  async function submitForm() {
-    await waitFor(() => fireEvent.click(screen.getByRole('button')))
-  }
+  test('should display error message on failure', async () => {
+    const spy = new UserLoginSpy()
+    render(<LoginPage authentication={spy} cache={new UserLocalStore()} />)
+
+    const userRegisterModel: UserLoginModel = { email: "valid@email.com", password: "any-password" }
+
+    await simulateTyping("Email address", userRegisterModel.email)
+    await simulateTyping("Password", userRegisterModel.password)
+    await submitForm()
+
+    expect(screen.getByText("Something went wrong.")).toBeVisible()
+  })
 })

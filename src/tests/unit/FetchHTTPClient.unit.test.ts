@@ -1,6 +1,6 @@
 import { FetchHTTPClient, FetchHTTPError } from '../../services/http/FetchHTTPClient';
 import { HTTPClientResponse } from '../../services/http/HTTPClient';
-import { anyURL, anyUserRegisterModel, anyValidJSONBody } from './Helpers/SharedHelpers';
+import { anyURL, anyUserRegisterModel, anyValidJSONBody } from './helpers/SharedHelpers';
 
 describe('FetchHTTPClient', () => {
   test('init does not send requests', () => {
@@ -46,7 +46,7 @@ describe('FetchHTTPClient', () => {
     await expect(promise).rejects.toEqual(new FetchHTTPError())
   });
 
-  test.only('PUT calls fetch with correct url and params', async () => {
+  test('PUT calls fetch with correct url and params', async () => {
     const url = anyURL()
     const body = anyUserRegisterModel()
 

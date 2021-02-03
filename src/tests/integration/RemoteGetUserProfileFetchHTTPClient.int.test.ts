@@ -7,7 +7,7 @@ describe('End to end API call to test RemoteGetUserProfile and FetchHTTPClient',
     const client = new FetchHTTPClient(fetch)
     const sut = new RemoteGetUserProfile(expectedURL(), client)
 
-    const result = await sut.load(expectedUserId())
+    const result = await sut.find(expectedUserEmail())
     
     expect(result).toStrictEqual(expectedUser())
   })
@@ -16,8 +16,8 @@ describe('End to end API call to test RemoteGetUserProfile and FetchHTTPClient',
     return new URL("https://reqres.in/api/users/");
   }
 
-  function expectedUserId(): number {
-    return 2
+  function expectedUserEmail(): string {
+    return "janet.weaver@reqres.in"
   }
 
   function expectedUser(): User {

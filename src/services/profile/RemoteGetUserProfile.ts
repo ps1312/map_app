@@ -9,12 +9,11 @@ export class RemoteGetUserProfile implements GetUserProfile {
     private readonly client: HTTPClient,
   ) {}
 
-  async load(userId: number): Promise<User> {
-    const userURL = new URL(`${userId}`, this.url)
-    const response = await this.client.get(userURL)
+  async find(email: string): Promise<User> {
+    const response = await this.client.get(this.url)
 
     if (response instanceof HTTPClientResponse) {
-      return RemoteGetUserProfileHandler.handle(response)
+      return RemoteGetUserProfileHandler.handle(response, email)
     }
 
     throw new NoConnectivityError()
@@ -22,21 +21,23 @@ export class RemoteGetUserProfile implements GetUserProfile {
 }
 
 class RemoteGetUserProfileHandler {
-  static handle(response: HTTPClientResponse) {
+  static findInResponse(users: User[], email: string): User {
+    const filteredUsers = users.filter((subject) => subject.email === email)
+    if (users.length > 0) return filteredUsers[0]
+    throw new InvalidDataError()
+  }
+
+  static handle(response: HTTPClientResponse, email: string) {
     const { statusCode, body } = response
-    if (statusCode === 200 && hasValidResponseBody(body)) return body.data
+    if (statusCode === 200 && hasValidResponseBody(body)) {
+      return RemoteGetUserProfileHandler.findInResponse(body.data, email)
+    }
     throw new InvalidDataError()
   }
 }
 
 type GetUserResponseBody = {
-  data: {
-    id: number;
-    email: string;
-    first_name: string;
-    last_name: string;
-    avatar: string;
-  }
+  data: User[]
 }
 
 function hasValidResponseBody(response: GetUserResponseBody): response is GetUserResponseBody {

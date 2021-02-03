@@ -7,6 +7,8 @@ import UnsecuredRoute from "./routes/UnsecuredRoute";
 import HomePage from "./pages/Home";
 import { makeRegistrationPage } from "./factories/RegistrationFactories";
 import { makeLoginPage } from "./factories/LoginFactories";
+import { makeNavBarComponent } from "./factories/NavBar";
+import { makeProfilePage } from "./factories/ProfileFactories";
 
 function App() {
   return (
@@ -24,10 +26,20 @@ function App() {
           />
 
           <PrivateRoute
+            path="/profile"
+            component={() => (
+              <>
+                {makeNavBarComponent()}
+                {makeProfilePage()}
+              </>
+            )}
+          />
+
+          <PrivateRoute
             path="/"
             component={(props: RouteComponentProps) => (
               <div>
-                <span>nav bar</span>
+                {makeNavBarComponent()}
                 <HomePage {...props} />
               </div>
             )}

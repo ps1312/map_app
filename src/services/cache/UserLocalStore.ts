@@ -1,6 +1,6 @@
 import { AuthenticatedUser } from "../../models/AuthenticatedUser"
 
-interface UserStore {
+export interface UserStore {
   insert(user: AuthenticatedUser): void;
   retrieve(): AuthenticatedUser | null;
   delete(): void;
