@@ -5,6 +5,6 @@ export class EditUserProfileSpy implements EditUserProfile {
   lastUpdatedUser?: User;
 
   async update(userId: number, updatedUser: UserEditModel): Promise<User> {
-    return this.lastUpdatedUser!
+    throw new Error()
   }
 }

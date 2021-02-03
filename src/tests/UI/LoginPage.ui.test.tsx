@@ -60,4 +60,18 @@ describe('LoginPage', () => {
     expect(spy.lastUserLoginModel).not.toBeUndefined()
     expect(spy.lastUserLoginModel).toStrictEqual(userLoginModel)
   })
+
+
+  test('should display error message on failure', async () => {
+    const spy = new UserLoginSpy()
+    render(<LoginPage authentication={spy} cache={new UserLocalStore()} />)
+
+    const userRegisterModel: UserLoginModel = { email: "valid@email.com", password: "any-password" }
+
+    await simulateTyping("Email address", userRegisterModel.email)
+    await simulateTyping("Password", userRegisterModel.password)
+    await submitForm()
+
+    expect(screen.getByText("Something went wrong.")).toBeVisible()
+  })
 })

@@ -61,7 +61,7 @@ describe('ProfilePage', () => {
   })
 
   test('submit button with valid fields should request user update with correct params', async () => {
-    const userUpdateSpy = renderSUT()
+    const [userUpdateSpy] = renderSUT()
     const updatedUser = anyEditUserModel()
 
     await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
@@ -73,19 +73,39 @@ describe('ProfilePage', () => {
     expect(userUpdateSpy.lastUpdatedUser).toStrictEqual(updatedUser)
   })
 
+  test('should display error message on get users load failure', async () => {
+    renderSUT(undefined, undefined, new Error())
+    await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
+    expect(screen.getByText("Something went wrong.")).toBeVisible()
+  })
+
+  test('should display error message profile edit failure', async () => {
+    renderSUT()
+    const updatedUser = anyEditUserModel()
+
+    await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
+    await simulateTyping("Email address", updatedUser.email)
+    await simulateTyping("First name", updatedUser.first_name)
+    await submitForm()
+
+    expect(screen.getByText("Something went wrong.")).toBeVisible()
+  })
+
   function renderSUT(
     user: User = anyUserWithEmail("any-email@mail.com"),
     editUserModel: UserEditModel = anyEditUserModel(),
-    ): EditUserProfileSpy {
+    failure: Error | undefined = undefined,
+    ): [EditUserProfileSpy, GetUserProfileSpy] {
     const userUpdateSpy = new EditUserProfileSpy()
     userUpdateSpy.lastUpdatedUser = editUserModel
 
     const getUserSpy = new GetUserProfileSpy()
     getUserSpy.lastUserCalled = user
+    getUserSpy.error = failure
 
     render(<ProfilePage loader={getUserSpy} updater={userUpdateSpy} cache={new UserLocalStoreSpy()} />)
 
-    return userUpdateSpy;
+    return [userUpdateSpy, getUserSpy];
   }
 
   function anyEditUserModel(): UserEditModel {

@@ -6,6 +6,6 @@ export class UserLoginSpy implements UserLogin {
 
   async login(userLoginModel: UserLoginModel): Promise<AuthenticationToken> {
     this.lastUserLoginModel = userLoginModel
-    return { token: "any-token" }
+    throw new Error();
   }
 }
