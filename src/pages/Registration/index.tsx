@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { Heading, Container } from "@chakra-ui/react";
 
 import { RegistrationForm } from "./components/RegistrationForm";
-import { SubmitRegistrationButton } from "./components/SubmitRegistationButton";
 import { UserRegister, UserRegisterModel } from "../../models/UserRegister";
 
 type RegistrationPageProps = {
   registration: UserRegister
 }
+
+
 
 const RegistrationPage = ({ registration }: RegistrationPageProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,14 +19,19 @@ const RegistrationPage = ({ registration }: RegistrationPageProps) => {
   const [password, setPassword] = useState("");
   const handlePasswordChange = (password: string) => setPassword(password);
 
-  const register = async () => {
-    setIsLoading(true)
-    try {
-      const userRegisterModel: UserRegisterModel = { email, password }
-      await registration.register(userRegisterModel)
-    } finally {
-      setIsLoading(false)
-    }
+  // const register = async () => {
+  //   setIsLoading(true)
+  //   try {
+  //     const userRegisterModel: UserRegisterModel = { email, password }
+  //     await registration.register(userRegisterModel)
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
+
+  const onSubmit = () => {
+
+    // register()
   }
 
   return (
@@ -33,16 +39,10 @@ const RegistrationPage = ({ registration }: RegistrationPageProps) => {
       <Heading alignSelf="center" size="2xl" mb="10">Map App</Heading>
 
       <RegistrationForm
-        email={email}
-        onEmailChange={handleEmailChange}
-        password={password}
-        onPasswordChange={handlePasswordChange}
+        isLoading={isLoading}
+        onSubmit={onSubmit}
       />
 
-      <SubmitRegistrationButton
-        isLoading={isLoading}
-        onSubmit={register}
-      />
     </Container>
   )
 }

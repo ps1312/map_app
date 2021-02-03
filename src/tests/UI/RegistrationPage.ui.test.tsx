@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { AuthenticatedUser } from '../../models/AuthenticatedUser'
 import { UserRegister, UserRegisterModel } from '../../models/UserRegister'
 
@@ -17,11 +17,18 @@ describe('RegistrationPage', () => {
     expect(screen.getByRole('button')).toHaveAttribute('disabled')
   })
 
-  test('should render invalid email error on invalid email', async () => {
+  test('should have validation error given input field is touched and error exists on form', async () => {
     render(<RegistrationPage registration={new UserRegisterSpy()} />)
+    const input = screen.getByLabelText('Email address')
+    await waitFor(() => fireEvent.blur(input));
+    expect(screen.queryAllByText('Invalid email address')).toHaveLength(1)
+  })
 
-    fireEvent.change(screen.getByLabelText('email-input'), { target: { value: "invalid email" }});
-
-    expect(screen.getByLabelText('invalid-email')).toBeVisible()
+  test('should have validation error given invalid email and field is touched', async () => {
+    render(<RegistrationPage registration={new UserRegisterSpy()} />)
+    const input = screen.getByLabelText('Email address')
+    await waitFor(() => fireEvent.change(input, { target: { value: "invalid email" } }));
+    await waitFor(() => fireEvent.blur(input));
+    expect(screen.queryAllByText('Invalid email address')).toHaveLength(1)
   })
 })
