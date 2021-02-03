@@ -29,7 +29,8 @@
     "test:unit": "react-scripts test unit",
     "eject": "react-scripts eject",
     "test:clearCache": "react-scripts test test --clearCache",
-    "test:int": "react-scripts test int"
+    "test:int": "react-scripts test int",
+    "test:ui": "react-scripts test ui"
   },
   "eslintConfig": {
     "extends": [
