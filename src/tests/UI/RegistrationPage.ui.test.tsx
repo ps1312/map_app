@@ -1,8 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+
 import { AuthenticatedUser } from '../../models/AuthenticatedUser'
 import { UserRegister, UserRegisterModel } from '../../models/UserRegister'
-
 import RegistrationPage from '../../pages/Registration/index'
+import { UserLocalStore } from '../../services/cache/UserLocalStore'
 
 class UserRegisterSpy implements UserRegister {
   lastUserRegisterModel?: UserRegisterModel
@@ -15,20 +16,20 @@ class UserRegisterSpy implements UserRegister {
 
 describe('RegistrationPage', () => {
   test('submit button should be disabled on empty formulary', async () => {
-    render(<RegistrationPage registration={new UserRegisterSpy()} />)
+    render(<RegistrationPage registration={new UserRegisterSpy()} cache={new UserLocalStore()} />)
 
     expect(screen.getByRole('button')).toHaveAttribute('disabled')
   })
 
   test('should have validation error given input field is touched and error exists on form', async () => {
-    render(<RegistrationPage registration={new UserRegisterSpy()} />)
+    render(<RegistrationPage registration={new UserRegisterSpy()} cache={new UserLocalStore()}/>)
     const input = screen.getByLabelText('Email address')
     await waitFor(() => fireEvent.blur(input));
     expect(screen.queryAllByText('Invalid email address')).toHaveLength(1)
   })
 
   test('should have validation error given invalid email and field is touched', async () => {
-    render(<RegistrationPage registration={new UserRegisterSpy()} />)
+    render(<RegistrationPage registration={new UserRegisterSpy()} cache={new UserLocalStore()}/>)
     const input = screen.getByLabelText('Email address')
     await waitFor(() => fireEvent.change(input, { target: { value: "invalid email" } }));
     await waitFor(() => fireEvent.blur(input));
@@ -36,14 +37,14 @@ describe('RegistrationPage', () => {
   })
 
   test('delivers validation error on password input field empty and touched', async () => {
-    render(<RegistrationPage registration={new UserRegisterSpy()} />)
+    render(<RegistrationPage registration={new UserRegisterSpy()} cache={new UserLocalStore()}/>)
     const input = screen.getByLabelText('Password')
     await waitFor(() => fireEvent.blur(input));
     expect(screen.queryAllByText('Invalid password')).toHaveLength(1)
   })
 
   test('submit should not be disabled on valid formulary', async () => {
-    render(<RegistrationPage registration={new UserRegisterSpy()} />)
+    render(<RegistrationPage registration={new UserRegisterSpy()} cache={new UserLocalStore()}/>)
 
     const userRegisterModel: UserRegisterModel = { email: "valid@email.com", password: "any-password" }
 
@@ -56,7 +57,7 @@ describe('RegistrationPage', () => {
 
   test('submit should call registration with correct values', async () => {
     const spy = new UserRegisterSpy()
-    render(<RegistrationPage registration={spy} />)
+    render(<RegistrationPage registration={spy} cache={new UserLocalStore()} />)
 
     const userRegisterModel: UserRegisterModel = { email: "valid@email.com", password: "any-password" }
 

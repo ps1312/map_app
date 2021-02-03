@@ -5,8 +5,8 @@ import { BrowserRouter as Router, Switch, RouteComponentProps } from "react-rout
 import PrivateRoute from "./routes/PrivateRoute";
 import UnsecuredRoute from "./routes/UnsecuredRoute";
 import HomePage from "./pages/Home";
-import RegistrationPage from "./pages/Registration";
 import { makeRegistrationPage } from "./factories/RegistrationFactories";
+import { makeLoginPage } from "./factories/LoginFactories";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
 
           <UnsecuredRoute
             path="/login"
-            component={RegistrationPage}
+            component={() => makeLoginPage()}
           />
 
           <PrivateRoute

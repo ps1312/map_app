@@ -1,16 +1,16 @@
 import { Button } from "@chakra-ui/react"
 
-type SubmitRegistrationButtonProps = {
+type SubmitLoginButtonProps = {
   isLoading: boolean;
   disabled: boolean;
   onSubmit: (() => void);
 }
 
-export const SubmitRegistrationButton = ({
+export const SubmitLoginButton = ({
   isLoading,
   disabled,
   onSubmit,
-}: SubmitRegistrationButtonProps) => (
+}: SubmitLoginButtonProps) => (
   <Button
     mt={10}
     w="140px"
@@ -20,6 +20,6 @@ export const SubmitRegistrationButton = ({
     alignSelf="flex-end"
     isLoading={isLoading}
   >
-      Register
+      Login
   </Button>
 )
