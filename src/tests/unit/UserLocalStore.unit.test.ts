@@ -1,5 +1,4 @@
 import { AuthenticatedUser } from "../../models/AuthenticatedUser"
-import { User } from "../../models/User"
 import { UserLocalStore } from "../../services/cache/UserLocalStore"
 
 describe('UserLocalStore', () => {
