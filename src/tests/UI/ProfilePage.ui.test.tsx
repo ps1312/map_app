@@ -12,6 +12,12 @@ describe('ProfilePage', () => {
     expect(screen.getByText('Loading...')).toBeVisible()
   })
 
+  test('submit button should be disabled on form load', async () => {
+    renderSUT()
+    await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
+    expect(screen.getByRole('button')).toHaveAttribute('disabled')
+  })
+
   test('should render validation error on empty fields', async () => {
     renderSUT()
 
