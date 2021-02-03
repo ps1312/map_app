@@ -1,7 +1,7 @@
 import { InvalidDataError, NoConnectivityError } from "../../services/errors"
 import { RemoteGetUserProfile } from "../../services/profile/RemoteGetUserProfile"
-import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
-import { anyURL } from "./Helpers/SharedHelpers"
+import { HTTPClientSpy } from "./helpers/HTTPClientSpy"
+import { anyURL } from "./helpers/SharedHelpers"
 
 describe('RemoteGetUserProfile', () => {
   test("does not make requests on init", () => {
