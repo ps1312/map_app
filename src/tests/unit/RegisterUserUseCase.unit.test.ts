@@ -1,7 +1,7 @@
 import { RemoteUserRegister } from "../../services/register/RemoteUserRegister";
 import { NoConnectivityError, InvalidDataError } from "../../services/errors";
-import { HTTPClientSpy } from "./helpers/HTTPClientSpy";
-import { anyUserRegisterModel, anyURL } from "./helpers/SharedHelpers";
+import { HTTPClientSpy } from "./Helpers/HTTPClientSpy";
+import { anyUserRegisterModel, anyURL } from "./Helpers/SharedHelpers";
 
 describe('RemoteUserRegister', () => {
   test('init does not request data from url', () => {

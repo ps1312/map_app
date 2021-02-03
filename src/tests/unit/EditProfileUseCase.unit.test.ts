@@ -1,8 +1,8 @@
 import { UserEditModel } from "../../models/EditUserProfile"
 import { InvalidDataError, NoConnectivityError } from "../../services/errors"
 import { RemoteEditUserProfile } from "../../services/profile/RemoteEditUserProfile"
-import { HTTPClientSpy } from "./helpers/HTTPClientSpy"
-import { anyURL, anyUserId } from "./helpers/SharedHelpers"
+import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
+import { anyURL, anyUserId } from "./Helpers/SharedHelpers"
 
 describe('RemoteEditUserProfile', () => {
   test("init does not make request", () => {
