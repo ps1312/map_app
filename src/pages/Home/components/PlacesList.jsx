@@ -4,8 +4,10 @@ import PlaceItem from "./PlaceItem";
 const PlacesList = (props) => {
   return (
     <UnorderedList width="60%">
-      {props.places.map((place) => (
+      {props.places.map((place, index) => (
         <PlaceItem
+          index={index}
+          openComments={props.openComments}
           isFavourite={props.favourites.indexOf(place.place_id) > -1}
           makeFavourite={props.makeFavourite}
           unfavourite={props.unfavourite}

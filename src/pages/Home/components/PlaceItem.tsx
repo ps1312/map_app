@@ -1,4 +1,4 @@
-import { Badge, Box, Text, Heading, Stack, Flex, IconButton } from "@chakra-ui/react"
+import { Badge, Box, Text, Heading, Stack, Flex, IconButton, Link } from "@chakra-ui/react"
 import { StarIcon } from "@chakra-ui/icons"
 
 export type PlaceItemProps = {
@@ -9,6 +9,8 @@ export type PlaceItemProps = {
   longitude: string;
   business_status: string;
   isFavourite: boolean;
+  index: number;
+  openComments: ((index: number) => void);
   makeFavourite: ((placeId: string) => void)
   unfavourite: ((placeId: string) => void)
 }
@@ -37,7 +39,7 @@ const ClosedTemporarilyBadge = () => {
   )
 }
 
-const renderBadge = (business_status: string) => {
+export const renderBadge = (business_status: string) => {
   switch (business_status) {
     case "OPERATIONAL":
       return <OperationalBadge />
@@ -67,7 +69,19 @@ const PlaceListItem = (props: PlaceItemProps) => {
         </Flex>
         <Text>{props.vicinity}</Text>
       </Stack>
-      {renderBadge(props.business_status)}
+      <Flex justifyContent="space-between" mt="3">
+        <div>
+          {renderBadge(props.business_status)}
+        </div>
+        <Link
+          color="blue.600"
+          fontWeight="bold"
+          alignSelf="flex-end"
+          onClick={() => props.openComments(props.index)}
+        >
+          Comments(0)
+        </Link>
+      </Flex>
     </Box>
   )
 }
