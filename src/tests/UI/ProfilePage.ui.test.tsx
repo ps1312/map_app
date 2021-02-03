@@ -1,4 +1,4 @@
-import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
+import { render, screen, waitForElementToBeRemoved, waitFor, wait } from '@testing-library/react'
 import { UserEditModel } from '../../models/EditUserProfile'
 
 import { User } from '../../models/User'

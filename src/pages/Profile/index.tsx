@@ -16,6 +16,7 @@ type ProfilePageProps = {
 
 type ProfilePageState = {
   isLoading: boolean;
+  isUpdatingUser: boolean;
   loadedUser: User | null;
   failed: boolean;
 }
@@ -26,6 +27,7 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
 
     this.state = {
       isLoading: false,
+      isUpdatingUser: false,
       loadedUser: null,
       failed: false,
     }
@@ -53,14 +55,25 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
   }
 
   updateUser = async (values: EditProfileFormValues) => {
-    const { loadedUser } = this.state;
-    const { updater } = this.props
+    this.setState({ isUpdatingUser: true })
+    const { updater, cache } = this.props;
+    const currentUser = cache.retrieve()!
 
-    await updater.update(loadedUser?.id!, values)
+    try {
+      const apiUser = await updater.update(currentUser.user.id!, values)
+      const updatedUser: AuthenticatedUser = {
+        user: { ...apiUser },
+        token: currentUser.token
+      }
+      cache.insert(updatedUser)
+      this.setState({ isUpdatingUser: false, loadedUser: updatedUser.user })
+    } catch {
+      this.setState({ isUpdatingUser: false })
+    }
   }
 
   render() {
-    const { isLoading, loadedUser } = this.state;
+    const { isLoading, isUpdatingUser, loadedUser } = this.state;
 
     const initialFormValues = {
       email: loadedUser?.email || "",
@@ -73,9 +86,10 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
         <Heading alignSelf="center" size="lg" mb="10">Update your account</Heading>
         
         {isLoading ? (
-          <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+          <Spinner alignSelf="center" thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
         ) : (
           <ProfileForm
+            isLoading={isUpdatingUser}
             initialValues={initialFormValues}
             onSubmit={this.updateUser}
           />

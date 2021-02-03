@@ -7,6 +7,7 @@ import { validateRequired } from '../../../services/validations/requiredField';
 
 type ProfileFormProps = {
   initialValues: EditProfileFormValues;
+  isLoading: boolean;
   onSubmit: ((values: EditProfileFormValues) => void);
 }
 
@@ -16,7 +17,7 @@ export type EditProfileFormValues = {
   last_name: string;
 }
 
-const ProfileForm = ({ initialValues, onSubmit }: ProfileFormProps) => {
+const ProfileForm = ({ initialValues, onSubmit, isLoading }: ProfileFormProps) => {
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit}>
       {(props) => {
@@ -63,8 +64,8 @@ const ProfileForm = ({ initialValues, onSubmit }: ProfileFormProps) => {
             </Field>
 
             <SubmitProfileEditButton
-              isLoading={false}
-              disabled={!isValid}
+              isLoading={isLoading}
+              disabled={!isValid || isLoading}
               onSubmit={props.handleSubmit}
             />
           </>
