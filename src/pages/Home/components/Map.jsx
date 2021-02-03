@@ -18,6 +18,7 @@ const Map = (props) => {
           {props.places.map((place, index) => {
             return (
               <Pin
+                onClick={() => props.openComments(index)}
                 name={place.name}
                 key={index}
                 lat={place.geometry.location.lat()}

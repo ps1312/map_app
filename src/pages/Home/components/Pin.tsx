@@ -2,11 +2,13 @@ import { Tooltip } from "@chakra-ui/react"
 
 type PinProps = {
   name: string
+  onClick: () => void
 }
 
 const Pin = (props: PinProps) => (
   <Tooltip label={`${props.name}`} fontSize="md">
     <svg
+      onClick={props.onClick}
       width="20"
       height="27"
       viewBox="0 0 20 27"

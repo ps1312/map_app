@@ -119,6 +119,7 @@ const HomePage = ({ favouritesCache, commentsCache, userCache }) => {
       )}
 
       <Map
+        openComments={openComments}
         position={position}
         places={places}
         handleApiLoaded={handleApiLoaded}
