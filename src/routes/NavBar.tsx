@@ -23,7 +23,7 @@ const NavBar = ({ cache }: NavBarProps) => {
         <Heading size="md">Map App</Heading>
       </Box>
       <Spacer />
-      <Box>
+      <Box pr="4">
         <Menu>
           <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
             {currentUser?.user.email}

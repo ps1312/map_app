@@ -7,10 +7,17 @@ class FavouritesLocalStore {
     localStorage.setItem(FavouritesLocalStore.localStorageKey, JSON.stringify(updatedFavourites))
   }
 
-  retrieve() {
+  retrieve(): string[] {
     const string = localStorage.getItem(FavouritesLocalStore.localStorageKey)
     const favourites = JSON.parse(string as string)
     return favourites ? favourites : []
+  }
+
+  delete(deletionPlaceId: string): string[] {
+    const favourites = this.retrieve()
+    const updatedFavourites = favourites.filter((placeId) => deletionPlaceId !== placeId)
+    localStorage.setItem(FavouritesLocalStore.localStorageKey, JSON.stringify(updatedFavourites))
+    return updatedFavourites
   }
 }
 
@@ -31,7 +38,7 @@ describe('FavouritesLocalStore', () => {
 
   test('retrieve array of inserted favourites places in local storage', () => {
     const sut = new FavouritesLocalStore()
-    sut.insert("any-place-id")
+    sut.insert(anyPlaceId())
     expect(sut.retrieve()).toHaveLength(1)
   })
 
@@ -48,6 +55,25 @@ describe('FavouritesLocalStore', () => {
     expect(favourites[0]).toStrictEqual(id1)
     expect(favourites[1]).toStrictEqual(id2)
   })
+
+  test('deletes inserted place_id', () => {
+    const sut = new FavouritesLocalStore()
+
+    const id1 = "id1"
+    sut.insert(id1)
+    const id2 = "id2"
+    sut.insert(id2)
+
+    sut.delete(id1)
+
+    const favourites = sut.retrieve()
+    expect(favourites).toHaveLength(1)
+    expect(favourites[0]).toStrictEqual(id2)
+  })
+
+  function anyPlaceId(): string {
+    return "any-id-1"
+  }
 })
 
 export {}
