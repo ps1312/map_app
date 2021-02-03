@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
 import { AuthenticatedUser } from '../../models/AuthenticatedUser'
 
 import { GetUserProfile } from '../../models/GetUserProfile'
@@ -35,7 +35,7 @@ describe('ProfilePage', () => {
     const user = anyUserWithEmail("any-email@mail.com")
     render(<ProfilePage loader={new GetUserProfileSpy()} cache={new UserLocalStoreSpy()} />)
 
-    // wait for load
+    await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
     const input = await screen.findByLabelText('Email address')
     expect(input).toBeVisible()
     expect(input).toHaveValue(user.email)
