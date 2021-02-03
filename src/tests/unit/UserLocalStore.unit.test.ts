@@ -18,7 +18,7 @@ describe('UserLocalStore', () => {
     expect(result).toStrictEqual(null)
   })
 
-  test.only('retrieves last inserted user after insert twice', () => {
+  test('retrieves last inserted user after insert twice', () => {
     const sut = new UserLocalStore()
 
     sut.insert(anyAuthenticatedUser())

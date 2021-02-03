@@ -1,30 +1,10 @@
-import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
-import { AuthenticatedUser } from '../../models/AuthenticatedUser'
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
 
-import { GetUserProfile } from '../../models/GetUserProfile'
 import { User } from '../../models/User'
 import ProfilePage from '../../pages/Profile'
-import { UserStore } from '../../services/cache/UserLocalStore'
-
-class GetUserProfileSpy implements GetUserProfile {
-  user?: User
-
-  async find(): Promise<User> {
-    return this.user!
-  }
-}
-
-class UserLocalStoreSpy implements UserStore {
-  insert(user: AuthenticatedUser): void {
-  }
-
-  retrieve(): AuthenticatedUser | null {
-    return { user: { email: "any-email@mail.com" }, token: "any-token" }
-  }
-
-  delete(): void {
-  }
-}
+import { GetUserProfileSpy } from './helpers/GetUserProfileSpy'
+import { simulateTyping } from './helpers/SharedHelpers'
+import { UserLocalStoreSpy } from './helpers/UserLocalStoreSpy'
 
 describe('ProfilePage', () => {
   test('displays loading indicator while loading user', async () => {
@@ -50,7 +30,6 @@ describe('ProfilePage', () => {
 
     await simulateTyping("Last name", "")
     expect(screen.queryAllByText('Invalid last name')).toHaveLength(1)
-
   })
 
   test('should render Profile edit form fields with initial values' , async () => {
@@ -72,12 +51,6 @@ describe('ProfilePage', () => {
     expect(lastName).toBeVisible()
     expect(lastName).toHaveValue(expectedUser.last_name)
   })
-
-  async function simulateTyping(label: string, value: string): Promise<void> {
-    const input = screen.getByLabelText(label)
-    await waitFor(() => fireEvent.change(input, { target: { value } }));
-    await waitFor(() => fireEvent.blur(input));
-  }
 })
 
 function anyUserWithEmail(email: string): User {

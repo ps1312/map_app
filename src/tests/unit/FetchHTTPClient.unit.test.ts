@@ -46,7 +46,7 @@ describe('FetchHTTPClient', () => {
     await expect(promise).rejects.toEqual(new FetchHTTPError())
   });
 
-  test.only('PUT calls fetch with correct url and params', async () => {
+  test('PUT calls fetch with correct url and params', async () => {
     const url = anyURL()
     const body = anyUserRegisterModel()
 
