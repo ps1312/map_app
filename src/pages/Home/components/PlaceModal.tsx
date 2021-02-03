@@ -12,6 +12,7 @@ type PlaceInformationProps = {
   isFavourite: boolean;
   vicinity: string;
   business_status: string;
+  commentsCount: number;
 }
 
 const PlaceInformation = (props: PlaceInformationProps) => (
@@ -28,11 +29,12 @@ const PlaceInformation = (props: PlaceInformationProps) => (
         {renderBadge(props.business_status)}
       </div>
       <Text
+        fontSize={14}
         color="blue.600"
         fontWeight="bold"
         alignSelf="flex-end"
       >
-        Comments(0)
+        {`Comments ${props.commentsCount}`}
       </Text>
     </Flex>
   </>
@@ -65,6 +67,7 @@ const PlaceModal = ({ isOpen, onClose, currentFavourite, addComment, comments }:
       <ModalContent p={10} >
         <ModalBody display="flex" flexDirection="column">
           <PlaceInformation
+            commentsCount={comments.length}
             name={currentFavourite.name}
             isFavourite={currentFavourite.isFavourite}
             vicinity={currentFavourite.vicinity}
