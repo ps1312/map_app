@@ -31,4 +31,11 @@ describe('RegistrationPage', () => {
     await waitFor(() => fireEvent.blur(input));
     expect(screen.queryAllByText('Invalid email address')).toHaveLength(1)
   })
+
+  test('delivers validation error on password input field empty and touched', async () => {
+    render(<RegistrationPage registration={new UserRegisterSpy()} />)
+    const input = screen.getByLabelText('Password')
+    await waitFor(() => fireEvent.blur(input));
+    expect(screen.queryAllByText('Invalid password')).toHaveLength(1)
+  })
 })

@@ -40,11 +40,11 @@ export const RegistrationForm = ({
               }}
             </Field>
 
-            <Field name="password">
+            <Field name="password" validate={validateRequired}>
             {({ field, form }: FieldProps<string>) => {
                 const isInvalid = form.errors.password !== undefined && form.touched.password !== undefined
                 return (
-                  <FormControl isRequired mt={5} isInvalid={isInvalid}>
+                  <FormControl mt={5} isInvalid={isInvalid}>
                     <FormLabel htmlFor="password">Password</FormLabel>
                     <Input {...field} id="password" type="password" placeholder="Please, enter a password"/>
                     <FormErrorMessage>Invalid password</FormErrorMessage>
@@ -62,6 +62,14 @@ export const RegistrationForm = ({
       }}
     </Formik>
   )
+}
+
+function validateRequired(value: string) {
+  let error;
+  if (!value) {
+    error = 'Required';
+  }
+  return error;
 }
 
 function validateEmail(value: string) {
