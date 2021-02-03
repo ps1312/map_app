@@ -21,7 +21,7 @@ const LoginPage = ({ authentication, cache }: LoginPageProps) => {
     try {
       const { token } = await authentication.login(values)
       setIsLoading(false)
-      cache.insert({ user: { updatedAt: new Date() }, token })
+      cache.insert({ user: { email: values.email,updatedAt: new Date() }, token })
       history.replace("/")
     } catch {
       setFailed(true)
