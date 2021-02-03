@@ -51,6 +51,13 @@ describe('ProfilePage', () => {
     expect(lastName).toHaveValue(expectedUser.last_name)
   })
 
+  test('submit button should not be disabled on at least one field edited with valid values', async () => {
+    renderSUT()
+    await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
+    await simulateTyping("Email address", "valid@mail.com")
+    expect(screen.getByRole('button')).not.toBeDisabled()
+  })
+
   function renderSUT(user: User = anyUserWithEmail("any-email@mail.com")) {
     const spy = new GetUserProfileSpy()
     spy.user = user

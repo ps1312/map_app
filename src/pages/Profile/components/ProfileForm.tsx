@@ -12,12 +12,14 @@ type ProfileFormProps = {
 export type EditProfileFormValues = {
   email: string;
   first_name: string;
+  last_name: string;
 }
 
 const ProfileForm = ({ initialValues }: ProfileFormProps) => {
   return (
     <Formik initialValues={initialValues} onSubmit={() => {}}>
-      {(_props) => {
+      {(props) => {
+        const isValid = props.isValid === true && props.dirty === true
         return (
           <>
           <Field name="email" validate={validateEmail}>
@@ -59,7 +61,11 @@ const ProfileForm = ({ initialValues }: ProfileFormProps) => {
               }}
             </Field>
 
-            <SubmitProfileEditButton isLoading={false} disabled={true} onSubmit={() => {}} />
+            <SubmitProfileEditButton
+              isLoading={false}
+              disabled={!isValid}
+              onSubmit={() => {}}
+            />
           </>
         )
       }}
