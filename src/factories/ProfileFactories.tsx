@@ -16,6 +16,7 @@ export const makeProfilePage = () => {
   return (
     <ProfilePage
       loader={makeRemoteGetUserProfile()}
+      cache={makeUserLocalStore()}
     />
   );
 };
