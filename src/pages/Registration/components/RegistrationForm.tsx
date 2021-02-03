@@ -8,7 +8,7 @@ type RegistrationFormProps = {
   onSubmit: ((values: RegistrationFormValues) => void);
 }
 
-type RegistrationFormValues = {
+export type RegistrationFormValues = {
   email: string;
   password: string;
 }

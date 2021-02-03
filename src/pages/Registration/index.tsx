@@ -1,23 +1,15 @@
 import React, { useState } from "react";
 import { Heading, Container } from "@chakra-ui/react";
 
-import { RegistrationForm } from "./components/RegistrationForm";
+import { RegistrationForm, RegistrationFormValues } from "./components/RegistrationForm";
 import { UserRegister, UserRegisterModel } from "../../models/UserRegister";
 
 type RegistrationPageProps = {
   registration: UserRegister
 }
 
-
-
 const RegistrationPage = ({ registration }: RegistrationPageProps) => {
   const [isLoading, setIsLoading] = useState(false);
-
-  const [email, setEmail] = useState("");
-  const handleEmailChange = (email: string) => setEmail(email);
-
-  const [password, setPassword] = useState("");
-  const handlePasswordChange = (password: string) => setPassword(password);
 
   // const register = async () => {
   //   setIsLoading(true)
@@ -29,9 +21,8 @@ const RegistrationPage = ({ registration }: RegistrationPageProps) => {
   //   }
   // }
 
-  const onSubmit = () => {
-
-    // register()
+  const onSubmit = async (values: RegistrationFormValues) => {
+    await registration.register(values)
   }
 
   return (
