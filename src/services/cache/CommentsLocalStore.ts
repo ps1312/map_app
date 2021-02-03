@@ -1,6 +1,7 @@
 export type Comment = {
   content: string;
   score: number;
+  author: string;
 }
 
 export class CommentsLocalStore {
