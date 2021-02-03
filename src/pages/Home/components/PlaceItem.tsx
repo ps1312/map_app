@@ -8,6 +8,9 @@ export type PlaceItemProps = {
   latitude: string;
   longitude: string;
   business_status: string;
+  isFavourite: boolean;
+  makeFavourite: ((placeId: string) => void)
+  unfavourite: ((placeId: string) => void)
 }
 
 const OperationalBadge = () => {
@@ -54,14 +57,12 @@ const PlaceListItem = (props: PlaceItemProps) => {
         <Flex justifyContent="space-between">
           <Heading size="lg">{props.name}</Heading>
           <IconButton
-            onClick={() => {
-              
-            }}
+            onClick={() => props.isFavourite ? props.unfavourite(props.place_id) : props.makeFavourite(props.place_id)}
             variant="ghost"
             size="md"
             aria-label="button"
             alignSelf="center"
-            icon={<StarIcon color="yellow.400" />}
+            icon={<StarIcon color={props.isFavourite ? "yellow.400" : "gray.400"} />}
           />
         </Flex>
         <Text>{props.vicinity}</Text>

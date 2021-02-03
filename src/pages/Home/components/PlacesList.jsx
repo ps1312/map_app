@@ -6,6 +6,9 @@ const PlacesList = (props) => {
     <UnorderedList width="60%">
       {props.places.map((place) => (
         <PlaceItem
+          isFavourite={props.favourites.indexOf(place.place_id) > -1}
+          makeFavourite={props.makeFavourite}
+          unfavourite={props.unfavourite}
           key={place.place_id}
           name={place.name}
           vicinity={place.vicinity}

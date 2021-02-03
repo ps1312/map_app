@@ -1,14 +1,14 @@
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import { BrowserRouter as Router, Switch, RouteComponentProps } from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import UnsecuredRoute from "./routes/UnsecuredRoute";
-import HomePage from "./pages/Home/index.jsx";
 import { makeRegistrationPage } from "./factories/RegistrationFactories";
 import { makeLoginPage } from "./factories/LoginFactories";
 import { makeNavBarComponent } from "./factories/NavBar";
 import { makeProfilePage } from "./factories/ProfileFactories";
+import { makeHomePage } from "./factories/HomeFactories";
 
 function App() {
   return (
@@ -37,11 +37,11 @@ function App() {
 
           <PrivateRoute
             path="/"
-            component={(props: RouteComponentProps) => (
-              <div>
+            component={() => (
+              <>
                 {makeNavBarComponent()}
-                <HomePage {...props} />
-              </div>
+                {makeHomePage()}
+              </>
             )}
           />
         </Switch>
