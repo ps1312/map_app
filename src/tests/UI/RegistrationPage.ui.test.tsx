@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { UserRegisterModel } from '../../models/UserRegister'
 import RegistrationPage from '../../pages/Registration/index'
 import { UserLocalStore } from '../../services/cache/UserLocalStore'
-import { simulateTyping } from './helpers/SharedHelpers'
+import { simulateTyping, submitForm } from './helpers/SharedHelpers'
 import { UserRegisterSpy } from './helpers/UserRegisterSpy'
 
 describe('RegistrationPage', () => {
@@ -60,8 +60,4 @@ describe('RegistrationPage', () => {
     expect(spy.lastUserRegisterModel).not.toBeUndefined()
     expect(spy.lastUserRegisterModel).toStrictEqual(userRegisterModel)
   })
-
-  async function submitForm() {
-    await waitFor(() => fireEvent.click(screen.getByRole('button')))
-  }
 })
