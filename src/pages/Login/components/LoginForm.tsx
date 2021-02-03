@@ -72,7 +72,7 @@ export const LoginForm = ({
               </Link>
 
               <SubmitLoginButton
-                disabled={!isValid}
+                disabled={!isValid || isLoading}
                 isLoading={isLoading}
                 onSubmit={props.handleSubmit}
               />

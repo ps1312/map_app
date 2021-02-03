@@ -67,7 +67,7 @@ export const RegistrationForm = ({
             </Field>
 
             <SubmitRegistrationButton
-              disabled={!isValid}
+              disabled={!isValid || isLoading}
               isLoading={isLoading}
               onSubmit={props.handleSubmit}
             />
