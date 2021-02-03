@@ -27,7 +27,7 @@ export const RegistrationForm = ({
   }
 
   return (
-    <Formik initialValues={initialValues} onSubmit={(values) => onSubmit(values)}>
+    <Formik initialValues={initialValues} onSubmit={onSubmit}>
       {(props) => {
         const isValid = props.isValid === true && props.dirty === true
 
