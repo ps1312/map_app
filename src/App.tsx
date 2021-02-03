@@ -8,6 +8,7 @@ import HomePage from "./pages/Home";
 import RegistrationPage from "./pages/Registration";
 import { RemoteUserRegister } from "./services/register/RemoteUserRegister";
 import { FetchHTTPClient } from "./services/http/FetchHTTPClient";
+import { UserLocalStore } from "./services/cache/UserLocalStore";
 
 const makeRemoteRegistration = () => {
   const fetch = window.fetch.bind(window);
@@ -16,8 +17,10 @@ const makeRemoteRegistration = () => {
   return new RemoteUserRegister(url, client)
 }
 
+const makeUserLocalStore = () => new UserLocalStore()
+
 const makeRegistrationPage = () => {
-  return <RegistrationPage registration={makeRemoteRegistration()} />
+  return <RegistrationPage registration={makeRemoteRegistration()} cache={makeUserLocalStore()} />
 }
 
 function App() {

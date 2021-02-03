@@ -1,24 +1,30 @@
 import React, { useState } from "react";
 import { Heading, Container } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
 
 import { RegistrationForm, RegistrationFormValues } from "./components/RegistrationForm";
 import { UserRegister } from "../../models/UserRegister";
+import { UserLocalStore } from "../../services/cache/UserLocalStore";
 
 type RegistrationPageProps = {
   registration: UserRegister
+  cache: UserLocalStore;
 }
 
-const RegistrationPage = ({ registration }: RegistrationPageProps) => {
+const RegistrationPage = ({ registration, cache }: RegistrationPageProps) => {
+  const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [failed, setFailed] = useState(false);
 
   const onSubmit = async (values: RegistrationFormValues) => {
     setIsLoading(true)
     try {
-      await registration.register(values)
+      const user = await registration.register(values)
+      setIsLoading(false)
+      cache.insert(user)
+      history.replace("/")
     } catch {
       setFailed(true)
-    } finally {
       setIsLoading(false)
     }
   }

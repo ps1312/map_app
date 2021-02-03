@@ -15,8 +15,7 @@ const HomePage = (props: RouteComponentProps) => {
 
   return (
     <>
-      <Button colorScheme="blue" onClick={() => logout()}>{userStore.retrieve()?.id}</Button>
-      <Button colorScheme="blue" onClick={() => logout()}>{userStore.retrieve()?.id}</Button>
+      <Button colorScheme="blue" onClick={() => logout()}>{userStore.retrieve()?.token}</Button>
     </>
   )
 }
