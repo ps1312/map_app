@@ -23,7 +23,7 @@ export class RemoteGetUserProfile implements GetUserProfile {
 class RemoteGetUserProfileHandler {
   static findInResponse(users: User[], email: string): User {
     const filteredUsers = users.filter((subject) => subject.email === email)
-    if (users.length === 1) return filteredUsers[0]
+    if (users.length > 0) return filteredUsers[0]
     throw new InvalidDataError()
   }
 
