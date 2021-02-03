@@ -6,6 +6,6 @@ export class UserRegisterSpy implements UserRegister {
 
   async register(userRegisterModel: UserRegisterModel): Promise<AuthenticatedUser> {
     this.lastUserRegisterModel = userRegisterModel
-    return { user: { id: 4 }, token: "any-token" }
+    throw new Error()
   }
 }

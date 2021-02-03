@@ -60,4 +60,17 @@ describe('RegistrationPage', () => {
     expect(spy.lastUserRegisterModel).not.toBeUndefined()
     expect(spy.lastUserRegisterModel).toStrictEqual(userRegisterModel)
   })
+
+  test('should display error message on failure', async () => {
+    const spy = new UserRegisterSpy()
+    render(<RegistrationPage registration={spy} cache={new UserLocalStore()} />)
+
+    const userRegisterModel: UserRegisterModel = { email: "valid@email.com", password: "any-password" }
+
+    await simulateTyping("Email address", userRegisterModel.email)
+    await simulateTyping("Password", userRegisterModel.password)
+    await submitForm()
+
+    expect(screen.getByText("Something went wrong.")).toBeVisible()
+  })
 })
