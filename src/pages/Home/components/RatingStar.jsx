@@ -3,7 +3,6 @@ import StarRatings from 'react-star-ratings';
 const Rating = ({ rating, setRating }) => (
   <StarRatings
     rating={rating}
-    starRatedColor="blue"
     changeRating={(newRating) => setRating(newRating)}
     numberOfStars={5}
     name='rating'

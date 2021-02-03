@@ -13,7 +13,7 @@ const Map = (props) => {
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map, maps }) => props.handleApiLoaded(map, maps)}
       >
-        {/* {props.places.map((place, index) => {
+        {props.places.map((place, index) => {
           return (
             <Pin
               key={index}
@@ -21,7 +21,7 @@ const Map = (props) => {
               lng={place.geometry.location.lng()}
             />
           )
-        })} */}
+        })}
       </GoogleMapReact>
     </Box>
   )
