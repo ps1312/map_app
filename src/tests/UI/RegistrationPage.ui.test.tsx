@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { AuthenticatedUser } from '../../models/AuthenticatedUser'
 import { UserRegister, UserRegisterModel } from '../../models/UserRegister'
 
@@ -15,5 +15,13 @@ describe('RegistrationPage', () => {
     render(<RegistrationPage registration={new UserRegisterSpy()} />)
 
     expect(screen.getByRole('button')).toHaveAttribute('disabled')
+  })
+
+  test('should render invalid email error on invalid email', async () => {
+    render(<RegistrationPage registration={new UserRegisterSpy()} />)
+
+    fireEvent.change(screen.getByLabelText('email-input'), { target: { value: "invalid email" }});
+
+    expect(screen.getByLabelText('invalid-email')).toBeVisible()
   })
 })

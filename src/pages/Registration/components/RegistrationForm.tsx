@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Input } from "@chakra-ui/react";
+import { FormControl, FormLabel, Input, FormErrorMessage } from "@chakra-ui/react";
 
 type RegistrationFormProps = {
   email: string;
@@ -14,9 +14,10 @@ export const RegistrationForm = ({
   onPasswordChange
 } : RegistrationFormProps) => (
   <>
-    <FormControl id="email" isRequired mt={5}>
+    <FormControl id="email" isRequired mt={5} isInvalid>
       <FormLabel>Email address</FormLabel>
-      <Input type="email" onChange={(e) => onEmailChange(e.target.value)} value={email}/>
+      <Input aria-label="email-input" type="email" onChange={(e) => onEmailChange(e.target.value)} value={email}/>
+      <FormErrorMessage aria-label="invalid-email">Campo obrigatório</FormErrorMessage>
     </FormControl>
 
     <FormControl id="password" isRequired mt={5}>
