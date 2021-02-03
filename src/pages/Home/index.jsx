@@ -5,11 +5,12 @@ import Map from "./components/Map.jsx";
 import PlaceModal from "./components/PlaceModal";
 
 const HomePage = (props) => {
-  const { favouritesCache } = props
+  const { favouritesCache, commentsCache, userCache } = props
 
   const [currentFavourite, setCurrentFavourite] = useState(null)
   const [favourites, setFavourites] = useState(favouritesCache.retrieve())
   const [places, setPlaces] = useState([])
+  const [comments, setComments] = useState([])
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   function handleApiLoaded(map, maps) {
@@ -44,21 +45,30 @@ const HomePage = (props) => {
   }
 
   const openComments = (placeIndex) => {
+    const placeId = places[placeIndex].place_id
     onOpen()
     const currentFavourite = {
       ...places[placeIndex],
       index: placeIndex,
-      isFavourite: favourites.indexOf(places[placeIndex].place_id) > -1,
+      isFavourite: favourites.indexOf(placeId) > -1,
       openComments,
       makeFavourite,
       unfavourite
     }
     setCurrentFavourite(currentFavourite)
+    setComments(commentsCache.retrieve(placeId))
   }
 
   const closeComments = () => {
     onClose()
     setCurrentFavourite(null)
+    setComments([])
+  }
+
+  const addComment = (placeId, comment, score) => {
+    const newComment = { content: comment, score, author: userCache.retrieve().user.email }
+    commentsCache.insert(placeId, newComment)
+    setComments(commentsCache.retrieve(placeId))
   }
 
   return (
@@ -67,7 +77,9 @@ const HomePage = (props) => {
       {currentFavourite && (
         <PlaceModal
           isOpen={isOpen}
+          comments={comments}
           onClose={closeComments}
+          addComment={addComment}
           currentFavourite={currentFavourite}
         />
       )}

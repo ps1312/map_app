@@ -1,4 +1,4 @@
-export type Comment = {
+export type CacheComment = {
   content: string;
   score: number;
   author: string;

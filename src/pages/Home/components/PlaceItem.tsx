@@ -74,12 +74,13 @@ const PlaceListItem = (props: PlaceItemProps) => {
           {renderBadge(props.business_status)}
         </div>
         <Link
+          fontSize={14}
           color="blue.600"
           fontWeight="bold"
           alignSelf="flex-end"
           onClick={() => props.openComments(props.index)}
         >
-          Comments(0)
+          See comments...
         </Link>
       </Flex>
     </Box>
