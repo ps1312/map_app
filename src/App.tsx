@@ -5,14 +5,15 @@ import { BrowserRouter as Router, Switch } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import UnsecuredRoute from "./routes/UnsecuredRoute";
 import HomePage from "./pages/Home";
-import LoginPage from "./pages/Login";
+import RegistrationPage from "./pages/Registration";
 
 function App() {
   return (
     <ChakraProvider>
       <Router>
         <Switch>
-          <UnsecuredRoute path="/login" component={LoginPage}/>
+          <UnsecuredRoute path="/register" component={RegistrationPage}/>
+          <UnsecuredRoute path="/login" component={RegistrationPage}/>
           <PrivateRoute path="/" component={HomePage} />
         </Switch>
       </Router>
