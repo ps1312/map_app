@@ -1,10 +1,11 @@
 import { Component } from "react";
-import { Heading, Container } from "@chakra-ui/react";
+import { Heading, Container, Spinner } from "@chakra-ui/react";
 
 import ProfileForm from "./components/ProfileForm";
 import { GetUserProfile } from "../../models/GetUserProfile";
 import { UserLocalStore } from "../../services/cache/UserLocalStore";
 import { AuthenticatedUser } from "../../models/AuthenticatedUser";
+import { User } from "../../models/User";
 
 type ProfilePageProps = {
   loader: GetUserProfile;
@@ -13,6 +14,7 @@ type ProfilePageProps = {
 
 type ProfilePageState = {
   isLoading: boolean
+  loadedUser: User | null
 }
 
 class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
@@ -20,7 +22,8 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
     super(props)
 
     this.state = {
-      isLoading: false
+      isLoading: false,
+      loadedUser: null,
     }
   }
 
@@ -34,22 +37,29 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
 
     try {
       const apiUser = await loader.find(currentUser.user.email!)
-      const upatedUser: AuthenticatedUser = {
+      const updatedUser: AuthenticatedUser = {
         user: { ...apiUser },
         token: currentUser.token
       }
-      cache.insert(upatedUser)
-    } catch {
-      console.log("error")
+      cache.insert(updatedUser)
+      this.setState({ isLoading: false, loadedUser: updatedUser.user })
+    } catch (error) {
+      console.log(error)
     }
   }
 
   render() {
+    const { isLoading, loadedUser } = this.state;
+
     return (
       <Container border="1px solid" borderColor="gray.300" padding="10" borderRadius="lg" mt="30" display="flex" flexDirection="column">
         <Heading alignSelf="center" size="lg" mb="10">Update your account</Heading>
         
-        <ProfileForm />
+        {isLoading ? (
+          <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+        ) : (
+          <ProfileForm initialValues={{ email: loadedUser?.email || "" }} />
+        )}
       </Container>
     )
   }
