@@ -1,8 +1,8 @@
 import { RemoteUserLogin } from "../../services/login/RemoteUserLogin"
 import { InvalidDataError, NoConnectivityError } from "../../services/errors"
 import { AuthenticationToken } from "../../models/AuthenticationToken"
-import { HTTPClientSpy } from "./helpers/HTTPClientSpy"
-import { anyURL } from "./helpers/SharedHelpers"
+import { HTTPClientSpy } from "./Helpers/HTTPClientSpy"
+import { anyURL } from "./Helpers/SharedHelpers"
 
 describe('RemoteUserLogin', () => {
   test('init does not make requests', () => {

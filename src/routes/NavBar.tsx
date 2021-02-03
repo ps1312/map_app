@@ -18,7 +18,7 @@ const NavBar = ({ cache }: NavBarProps) => {
   }
 
   return (
-    <Flex p="3" borderBottom="1px solid" borderColor="gray.300">
+    <Flex p="3" bg="white" borderBottom="1px solid" borderColor="gray.300" position="fixed" width="100vw">
       <Box p="2">
         <Heading size="md">Map App</Heading>
       </Box>
