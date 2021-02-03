@@ -1,5 +1,6 @@
 import { Formik, Field, FieldProps } from 'formik';
-import { FormControl, FormLabel, Input, FormErrorMessage } from "@chakra-ui/react";
+import { FormControl, FormLabel, Input, FormErrorMessage, Tooltip, Box } from "@chakra-ui/react";
+import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 import { SubmitProfileEditButton } from "./SubmitProfileEditButton"
 import { validateEmail } from '../../../services/validations/validateEmail';
@@ -29,8 +30,17 @@ const ProfileForm = ({ initialValues, onSubmit, isLoading }: ProfileFormProps) =
                 const isInvalid = form.errors.email !== undefined && form.touched.email !== undefined
                 return (
                   <FormControl mt={5} isInvalid={isInvalid}>
-                    <FormLabel htmlFor="email">Email address</FormLabel>
-                    <Input {...field} id="email" type="email" placeholder="Please, enter a email" />
+                    <Box display="flex" flexDirection="row">
+                      <FormLabel htmlFor="email">Email address</FormLabel>
+                      <Tooltip
+                        label="Nota para o teste: Como o REQ|RES não persiste a mudança, ao alterar o email o sistema perde a única referêcia para o modelo no banco e com isso os dados locais salvos."
+                        aria-label="A tooltip"
+                        width="300"
+                      >
+                        <InfoOutlineIcon mt="1" />
+                      </Tooltip>
+                    </Box>
+                    <Input disabled={true} {...field} id="email" type="email" placeholder="Please, enter a email" />
                     <FormErrorMessage>Invalid email address</FormErrorMessage>
                   </FormControl>
                 )
