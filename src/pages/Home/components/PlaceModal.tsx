@@ -50,6 +50,12 @@ const PlaceModal = ({ isOpen, onClose, currentFavourite, addComment, comments }:
   const [content, setContent] = useState("")
   const [rating, setRating] = useState(0)
 
+  const submitRating = () => {
+    setContent("")
+    setRating(0)
+    addComment(currentFavourite.place_id, content, rating)
+  }
+
   return (
     <Modal
       isOpen={isOpen}
@@ -68,6 +74,7 @@ const PlaceModal = ({ isOpen, onClose, currentFavourite, addComment, comments }:
           <Divider mt="5" mb="5" />
 
           <Textarea
+            value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Type something nice about this place..."
           />
@@ -82,7 +89,7 @@ const PlaceModal = ({ isOpen, onClose, currentFavourite, addComment, comments }:
               alignSelf="center"
               mt={5}
               colorScheme="blue"
-              onClick={() => addComment(currentFavourite.place_id, content, rating)}
+              onClick={submitRating}
             >
               Submit
             </Button>
