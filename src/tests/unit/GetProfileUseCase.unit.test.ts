@@ -51,6 +51,13 @@ describe('RemoteGetUserProfile', () => {
     await expect(sut.find(anyEmail())).rejects.toEqual(new InvalidDataError())
   })
 
+  test('delivers invalid data if user is not found', async () => {
+    const [sut, client] = makeSUT()
+
+    client.completeWithSuccess(200, { "data": [] })
+    await expect(sut.find(anyEmail())).rejects.toEqual(new InvalidDataError())
+  })
+
   test('delivers requested user data on 200 status code and valid JSON body', async () => {
     const email = "george.bluth@reqres.in"
     const [sut, client] = makeSUT()
