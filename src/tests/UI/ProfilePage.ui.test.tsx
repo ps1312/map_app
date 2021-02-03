@@ -1,9 +1,11 @@
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
+import { UserEditModel } from '../../models/EditUserProfile'
 
 import { User } from '../../models/User'
 import ProfilePage from '../../pages/Profile'
+import { EditUserProfileSpy } from './helpers/EditUserProfileSpy'
 import { GetUserProfileSpy } from './helpers/GetUserProfileSpy'
-import { simulateTyping } from './helpers/SharedHelpers'
+import { simulateTyping, submitForm } from './helpers/SharedHelpers'
 import { UserLocalStoreSpy } from './helpers/UserLocalStoreSpy'
 
 describe('ProfilePage', () => {
@@ -58,10 +60,31 @@ describe('ProfilePage', () => {
     expect(screen.getByRole('button')).not.toBeDisabled()
   })
 
-  function renderSUT(user: User = anyUserWithEmail("any-email@mail.com")) {
-    const spy = new GetUserProfileSpy()
-    spy.user = user
-    render(<ProfilePage loader={spy} cache={new UserLocalStoreSpy()} />)
+  test('submit button with valid fields should request user update with correct params', async () => {
+    const spy = renderSUT()
+    const updatedUser: UserEditModel = {
+      email: "valid@mail.com",
+      first_name: "updatedFristName",
+      last_name: "updatedLastName",
+    }
+
+    await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
+    await simulateTyping("Email address", updatedUser.email)
+    await simulateTyping("First name", updatedUser.first_name)
+    await simulateTyping("Last name", updatedUser.last_name)
+    await submitForm()
+
+    expect(spy.lastUpdatedUser).toStrictEqual(updatedUser)
+  })
+
+  function renderSUT(user: User = anyUserWithEmail("any-email@mail.com")): EditUserProfileSpy {
+    const userUpdateSpy = new EditUserProfileSpy()
+
+    const getUserSpy = new GetUserProfileSpy()
+    getUserSpy.lastUserCalled = user
+    render(<ProfilePage loader={getUserSpy} updater={userUpdateSpy} cache={new UserLocalStoreSpy()} />)
+
+    return userUpdateSpy;
   }
 
   function anyUserWithEmail(email: string): User {

@@ -2,9 +2,9 @@ import { GetUserProfile } from "../../../models/GetUserProfile"
 import { User } from "../../../models/User"
 
 export class GetUserProfileSpy implements GetUserProfile {
-  user?: User
+  lastUserCalled?: User
 
-  async find(): Promise<User> {
-    return this.user!
+  async find(email: string): Promise<User> {
+    return this.lastUserCalled!
   }
 }

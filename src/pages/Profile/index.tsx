@@ -1,20 +1,23 @@
 import { Component } from "react";
 import { Heading, Container, Spinner } from "@chakra-ui/react";
 
-import ProfileForm from "./components/ProfileForm";
+import ProfileForm, { EditProfileFormValues } from "./components/ProfileForm";
 import { GetUserProfile } from "../../models/GetUserProfile";
 import { UserLocalStore } from "../../services/cache/UserLocalStore";
 import { AuthenticatedUser } from "../../models/AuthenticatedUser";
 import { User } from "../../models/User";
+import { EditUserProfile } from "../../models/EditUserProfile";
 
 type ProfilePageProps = {
   loader: GetUserProfile;
-  cache: UserLocalStore
+  cache: UserLocalStore;
+  updater: EditUserProfile;
 }
 
 type ProfilePageState = {
-  isLoading: boolean
-  loadedUser: User | null
+  isLoading: boolean;
+  loadedUser: User | null;
+  failed: boolean;
 }
 
 class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
@@ -24,6 +27,7 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
     this.state = {
       isLoading: false,
       loadedUser: null,
+      failed: false,
     }
   }
 
@@ -44,8 +48,15 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
       cache.insert(updatedUser)
       this.setState({ isLoading: false, loadedUser: updatedUser.user })
     } catch (error) {
-      console.log(error)
+      this.setState({ failed: true })
     }
+  }
+
+  updateUser = async (values: EditProfileFormValues) => {
+    const { loadedUser } = this.state;
+    const { updater } = this.props
+
+    await updater.update(loadedUser?.id!, values)
   }
 
   render() {
@@ -64,7 +75,10 @@ class ProfilePage extends Component<ProfilePageProps, ProfilePageState> {
         {isLoading ? (
           <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
         ) : (
-          <ProfileForm initialValues={initialFormValues} />
+          <ProfileForm
+            initialValues={initialFormValues}
+            onSubmit={this.updateUser}
+          />
         )}
       </Container>
     )
