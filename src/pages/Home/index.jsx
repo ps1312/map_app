@@ -1,30 +1,43 @@
-import React, {  useState } from "react";
+import React, {  useRef, useState, useEffect } from "react";
 import { Box, Spinner, useDisclosure } from "@chakra-ui/react"
 import PlacesList from "./components/PlacesList.jsx";
 import Map from "./components/Map.jsx";
 import PlaceModal from "./components/PlaceModal";
 
-const HomePage = (props) => {
-  const { favouritesCache, commentsCache, userCache } = props
+const defaultLocation = { latitude: -8.114559, longitude: -34.901789 }
 
+const HomePage = ({ favouritesCache, commentsCache, userCache }) => {
+  const mapRef = useRef()
   const [currentFavourite, setCurrentFavourite] = useState(null)
   const [favourites, setFavourites] = useState(favouritesCache.retrieve())
   const [places, setPlaces] = useState([])
   const [comments, setComments] = useState([])
+  const [position, setPosition] = useState(undefined)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  function handleApiLoaded(map, maps) {
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      setPosition(position.coords)
+    }, () => {
+      setPosition(defaultLocation)
+    }, { timeout: 2000 });
+  }, [])
+
+
+  const handleApiLoaded = (map, maps) => {
     var service = new maps.places.PlacesService(map);
+    mapRef.current = service
+    updatePlaces(map)
+  }
+
+  const updatePlaces = (map) => {
     var request = {
       fields: ['geometry', 'name', 'vicinity', 'place_id', 'business_status'],
-      location: {
-        lat: -8.114559,
-        lng: -34.901789
-      },
+      location: map.center,
       radius: 500
     };
   
-    service.nearbySearch(request, function(results) {
+    mapRef.current.nearbySearch(request, function(results) {
       setPlaces(results)
     });
   }
@@ -71,6 +84,8 @@ const HomePage = (props) => {
     setComments(commentsCache.retrieve(placeId))
   }
 
+  console.log(position)
+
   return (
     <Box height="90vh" paddingTop="10vh" width="50vw" display="flex" justifyContent="center">
 
@@ -85,13 +100,15 @@ const HomePage = (props) => {
       )}
 
       {places.length > 0 ? (
-        <PlacesList
-          openComments={openComments}
-          places={places}
-          makeFavourite={makeFavourite}
-          unfavourite={unfavourite}
-          favourites={favourites}
-          />
+        <>
+          <PlacesList
+            openComments={openComments}
+            places={places}
+            makeFavourite={makeFavourite}
+            unfavourite={unfavourite}
+            favourites={favourites}
+            />
+        </>
       ) : (
         <Spinner
           alignSelf="center"
@@ -103,7 +120,12 @@ const HomePage = (props) => {
         />
       )}
 
-      <Map places={places} handleApiLoaded={handleApiLoaded} />
+      <Map
+        position={position}
+        places={places}
+        handleApiLoaded={handleApiLoaded}
+        onDragEnd={updatePlaces}
+      />
 
     </Box>
   )
