@@ -1,4 +1,5 @@
-import { Badge, Box, Text, Heading, Stack } from "@chakra-ui/react"
+import { Badge, Box, Text, Heading, Stack, Flex, IconButton } from "@chakra-ui/react"
+import { StarIcon } from "@chakra-ui/icons"
 
 export type PlaceItemProps = {
   name: string;
@@ -50,7 +51,19 @@ const PlaceListItem = (props: PlaceItemProps) => {
   return (
     <Box borderRadius={5} marginBottom={3} color="black" p="4" border="1px solid" borderColor="gray.300">
       <Stack>
-        <Heading size="lg">{props.name}</Heading>
+        <Flex justifyContent="space-between">
+          <Heading size="lg">{props.name}</Heading>
+          <IconButton
+            onClick={() => {
+              
+            }}
+            variant="ghost"
+            size="md"
+            aria-label="button"
+            alignSelf="center"
+            icon={<StarIcon color="yellow.400" />}
+          />
+        </Flex>
         <Text>{props.vicinity}</Text>
       </Stack>
       {renderBadge(props.business_status)}
