@@ -65,7 +65,7 @@ export const LoginForm = ({
             </Field>
 
             <Flex flexDirection="row" justifyContent="space-between">
-              <Link colorScheme="blue" href="/register" alignSelf="center">
+              <Link mb="3" color="blue.600" fontWeight="bold" href="/register" alignSelf="flex-end">
                 Create an account
               </Link>
 
