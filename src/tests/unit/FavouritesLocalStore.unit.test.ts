@@ -8,7 +8,7 @@ class FavouritesLocalStore {
   retrieve() {
     const string = localStorage.getItem(FavouritesLocalStore.localStorageKey)
     const favourites = JSON.parse(string as string)
-    return favourites
+    return favourites ? favourites : []
   }
 }
 
@@ -20,6 +20,11 @@ describe('FavouritesLocalStore', () => {
   test('init does not have side effects', () => {
     new FavouritesLocalStore()
     expect(localStorage.length).toEqual(0)
+  })
+
+  test('retrieve empty array on empty storage', () => {
+    const sut = new FavouritesLocalStore()
+    expect(sut.retrieve()).toHaveLength(0)
   })
 
   test('retrieve array of inserted favourites places in local storage', () => {
