@@ -5,8 +5,10 @@ import { BrowserRouter as Router, Switch, RouteComponentProps } from "react-rout
 import PrivateRoute from "./routes/PrivateRoute";
 import UnsecuredRoute from "./routes/UnsecuredRoute";
 import HomePage from "./pages/Home";
+import ProfilePage from "./pages/Profile";
 import { makeRegistrationPage } from "./factories/RegistrationFactories";
 import { makeLoginPage } from "./factories/LoginFactories";
+import { makeNavBarComponent } from "./factories/NavBar";
 
 function App() {
   return (
@@ -24,10 +26,20 @@ function App() {
           />
 
           <PrivateRoute
+            path="/profile"
+            component={(props: RouteComponentProps) => (
+              <div>
+                {makeNavBarComponent()}
+                <ProfilePage {...props} />
+              </div>
+            )}
+          />
+
+          <PrivateRoute
             path="/"
             component={(props: RouteComponentProps) => (
               <div>
-                <span>nav bar</span>
+                {makeNavBarComponent()}
                 <HomePage {...props} />
               </div>
             )}
