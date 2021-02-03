@@ -1,3 +1,4 @@
+import { AuthenticatedUser } from "../../models/AuthenticatedUser"
 import { User } from "../../models/User"
 import { UserLocalStore } from "../../services/cache/UserLocalStore"
 
@@ -17,12 +18,12 @@ describe('UserLocalStore', () => {
     expect(result).toStrictEqual(null)
   })
 
-  test('retrieves last inserted user after insert twice', () => {
+  test.only('retrieves last inserted user after insert twice', () => {
     const sut = new UserLocalStore()
 
-    sut.insert(anyUser())
+    sut.insert(anyAuthenticatedUser())
 
-    const latestUser = anyUser()
+    const latestUser = anyAuthenticatedUser()
     sut.insert(latestUser)
 
     expect(sut.retrieve()).toStrictEqual(latestUser)
@@ -30,7 +31,7 @@ describe('UserLocalStore', () => {
 
   test('retrieves null after delete non empty store', () => {
     const sut = new UserLocalStore()
-    const latestUser = anyUser()
+    const latestUser = anyAuthenticatedUser()
 
     sut.insert(latestUser)
     expect(sut.retrieve()).toStrictEqual(latestUser)
@@ -51,21 +52,24 @@ describe('UserLocalStore', () => {
 
   test('retrieve twice does not have side effects', () => {
     const sut = new UserLocalStore()
-    const latestUser = anyUser()
+    const latestUser = anyAuthenticatedUser()
 
     sut.insert(latestUser)
     expect(sut.retrieve()).toStrictEqual(latestUser)
     expect(sut.retrieve()).toStrictEqual(latestUser)
   })
 
-  function anyUser(): User {
+  function anyAuthenticatedUser(): AuthenticatedUser {
     return {
-      id: Math.random(),
-      email: 'janet.weaver@reqres.in',
-      first_name: 'Janet',
-      last_name: 'Weaver',
-      avatar: 'https://reqres.in/img/faces/2-image.jpg',
-      updatedAt: new Date()
+      user: {
+        id: Math.random(),
+        email: 'janet.weaver@reqres.in',
+        first_name: 'Janet',
+        last_name: 'Weaver',
+        avatar: 'https://reqres.in/img/faces/2-image.jpg',
+        updatedAt: new Date()
+      },
+      token: "any-token"
     }
   }
 })

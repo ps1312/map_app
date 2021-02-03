@@ -1,24 +1,31 @@
-import { User } from "../../models/User"
+import { AuthenticatedUser } from "../../models/AuthenticatedUser"
 
 interface UserStore {
-  insert(user: User): void;
-  retrieve(): User | null;
+  insert(user: AuthenticatedUser): void;
+  retrieve(): AuthenticatedUser | null;
   delete(): void;
 }
 
 export class UserLocalStore implements UserStore {
   static localStorageKey = "user"
 
-  insert(user: User) {
+  insert(user: AuthenticatedUser) {
     const userStringified = JSON.stringify(user)
     localStorage.setItem(UserLocalStore.localStorageKey, userStringified)
   }
 
-  retrieve(): User | null {
+  retrieve(): AuthenticatedUser | null {
     const string = localStorage.getItem(UserLocalStore.localStorageKey)
-    const user = JSON.parse(string as string)
+    const authenticatedUser = JSON.parse(string as string)
 
-    if (user) return { ...user, updatedAt: new Date(user.updatedAt) }
+    if (authenticatedUser) {
+      const tmpUser = {
+        ...authenticatedUser.user,
+        updatedAt: new Date(authenticatedUser.user.updatedAt)
+      }
+
+      return { user: {...tmpUser}, token: authenticatedUser.token }
+    }
 
     return null
   }
