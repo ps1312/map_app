@@ -2,7 +2,9 @@ class FavouritesLocalStore {
   static localStorageKey = "favourites"
 
   insert(placeId: string) {
-    localStorage.setItem(FavouritesLocalStore.localStorageKey, JSON.stringify([placeId]))
+    const favourites = this.retrieve()
+    const updatedFavourites = [...favourites, placeId]
+    localStorage.setItem(FavouritesLocalStore.localStorageKey, JSON.stringify(updatedFavourites))
   }
 
   retrieve() {
@@ -31,6 +33,20 @@ describe('FavouritesLocalStore', () => {
     const sut = new FavouritesLocalStore()
     sut.insert("any-place-id")
     expect(sut.retrieve()).toHaveLength(1)
+  })
+
+  test('retrieve two inserted places_id', async () => {
+    const sut = new FavouritesLocalStore()
+    const id1 = "any-id-1"
+    sut.insert(id1)
+
+    const id2 = "any-id-2"
+    sut.insert(id2)
+
+    const favourites = sut.retrieve()
+    expect(favourites).toHaveLength(2)
+    expect(favourites[0]).toStrictEqual(id1)
+    expect(favourites[1]).toStrictEqual(id2)
   })
 })
 
