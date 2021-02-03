@@ -8,17 +8,12 @@ import { UserLocalStoreSpy } from './helpers/UserLocalStoreSpy'
 
 describe('ProfilePage', () => {
   test('displays loading indicator while loading user', async () => {
-    const spy = new GetUserProfileSpy()
-    spy.user = anyUserWithEmail("any-email@mail.com")
-    render(<ProfilePage loader={spy} cache={new UserLocalStoreSpy()} />)
-
+    renderSUT()
     expect(screen.getByText('Loading...')).toBeVisible()
   })
 
   test('should render validation error on empty fields', async () => {
-    const spy = new GetUserProfileSpy()
-    spy.user = anyUserWithEmail("any-email@mail.com")
-    render(<ProfilePage loader={spy} cache={new UserLocalStoreSpy()} />)
+    renderSUT()
 
     await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
 
@@ -33,10 +28,8 @@ describe('ProfilePage', () => {
   })
 
   test('should render Profile edit form fields with initial values' , async () => {
-    const expectedUser = anyUserWithEmail("any-email@mail.com")
-    const spy = new GetUserProfileSpy()
-    spy.user = expectedUser
-    render(<ProfilePage loader={spy} cache={new UserLocalStoreSpy()} />)
+    const expectedUser = anyUserWithEmail("another@mail.com")
+    renderSUT(expectedUser)
 
     await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
     const email = screen.getByLabelText('Email address')
@@ -51,16 +44,21 @@ describe('ProfilePage', () => {
     expect(lastName).toBeVisible()
     expect(lastName).toHaveValue(expectedUser.last_name)
   })
-})
 
-function anyUserWithEmail(email: string): User {
-  return {
-    id: Math.random(),
-    email: email,
-    first_name: 'Janet',
-    last_name: 'Weaver',
-    avatar: 'https://reqres.in/img/faces/2-image.jpg',
-    updatedAt: new Date()
-    
+  function renderSUT(user: User = anyUserWithEmail("any-email@mail.com")) {
+    const spy = new GetUserProfileSpy()
+    spy.user = user
+    render(<ProfilePage loader={spy} cache={new UserLocalStoreSpy()} />)
   }
-}
+
+  function anyUserWithEmail(email: string): User {
+    return {
+      id: Math.random(),
+      email: email,
+      first_name: 'Janet',
+      last_name: 'Weaver',
+      avatar: 'https://reqres.in/img/faces/2-image.jpg',
+      updatedAt: new Date()
+    }
+  }
+})
