@@ -1,4 +1,4 @@
-import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { AuthenticatedUser } from '../../models/AuthenticatedUser'
 
 import { GetUserProfile } from '../../models/GetUserProfile'
@@ -7,8 +7,10 @@ import ProfilePage from '../../pages/Profile'
 import { UserStore } from '../../services/cache/UserLocalStore'
 
 class GetUserProfileSpy implements GetUserProfile {
-  async find(email: string): Promise<User> {
-    return anyUserWithEmail(email)
+  user?: User
+
+  async find(): Promise<User> {
+    return this.user!
   }
 }
 
@@ -26,28 +28,56 @@ class UserLocalStoreSpy implements UserStore {
 
 describe('ProfilePage', () => {
   test('displays loading indicator while loading user', async () => {
-    render(<ProfilePage loader={new GetUserProfileSpy()} cache={new UserLocalStoreSpy()} />)
+    const spy = new GetUserProfileSpy()
+    spy.user = anyUserWithEmail("any-email@mail.com")
+    render(<ProfilePage loader={spy} cache={new UserLocalStoreSpy()} />)
 
     expect(screen.getByText('Loading...')).toBeVisible()
   })
 
+  test('should render validation error on empty fields', async () => {
+    const spy = new GetUserProfileSpy()
+    spy.user = anyUserWithEmail("any-email@mail.com")
+    render(<ProfilePage loader={spy} cache={new UserLocalStoreSpy()} />)
+
+    await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
+
+    await simulateTyping("Email address", "")
+    expect(screen.queryAllByText('Invalid email address')).toHaveLength(1)
+
+    await simulateTyping("First name", "")
+    expect(screen.queryAllByText('Invalid first name')).toHaveLength(1)
+
+    await simulateTyping("Last name", "")
+    expect(screen.queryAllByText('Invalid last name')).toHaveLength(1)
+
+  })
+
   test('should render Profile edit form fields with initial values' , async () => {
-    const user = anyUserWithEmail("any-email@mail.com")
-    render(<ProfilePage loader={new GetUserProfileSpy()} cache={new UserLocalStoreSpy()} />)
+    const expectedUser = anyUserWithEmail("any-email@mail.com")
+    const spy = new GetUserProfileSpy()
+    spy.user = expectedUser
+    render(<ProfilePage loader={spy} cache={new UserLocalStoreSpy()} />)
 
     await waitForElementToBeRemoved(() => screen.queryByText('Loading...'))
     const email = screen.getByLabelText('Email address')
     expect(email).toBeVisible()
-    expect(email).toHaveValue(user.email)
+    expect(email).toHaveValue(expectedUser.email)
 
     const firstName = screen.getByLabelText('First name')
     expect(firstName).toBeVisible()
-    expect(firstName).toHaveValue(user.first_name)
+    expect(firstName).toHaveValue(expectedUser.first_name)
 
     const lastName = screen.getByLabelText('Last name')
     expect(lastName).toBeVisible()
-    expect(lastName).toHaveValue(user.last_name)
+    expect(lastName).toHaveValue(expectedUser.last_name)
   })
+
+  async function simulateTyping(label: string, value: string): Promise<void> {
+    const input = screen.getByLabelText(label)
+    await waitFor(() => fireEvent.change(input, { target: { value } }));
+    await waitFor(() => fireEvent.blur(input));
+  }
 })
 
 function anyUserWithEmail(email: string): User {
