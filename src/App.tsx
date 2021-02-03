@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, RouteComponentProps } from "react-rout
 
 import PrivateRoute from "./routes/PrivateRoute";
 import UnsecuredRoute from "./routes/UnsecuredRoute";
-import HomePage from "./pages/Home";
+import HomePage from "./pages/Home/index.jsx";
 import { makeRegistrationPage } from "./factories/RegistrationFactories";
 import { makeLoginPage } from "./factories/LoginFactories";
 import { makeNavBarComponent } from "./factories/NavBar";
