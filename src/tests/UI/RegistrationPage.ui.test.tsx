@@ -5,8 +5,8 @@ import { UserRegister, UserRegisterModel } from '../../models/UserRegister'
 import RegistrationPage from '../../pages/Registration/index'
 
 class UserRegisterSpy implements UserRegister {
-  register(_userRegisterModel: UserRegisterModel): Promise<AuthenticatedUser> {
-    throw new Error('Method not implemented.')
+  async register(_userRegisterModel: UserRegisterModel): Promise<AuthenticatedUser> {
+    return { user: { id: 4 }, token: "any-token" }
   }
 }
 
@@ -38,4 +38,22 @@ describe('RegistrationPage', () => {
     await waitFor(() => fireEvent.blur(input));
     expect(screen.queryAllByText('Invalid password')).toHaveLength(1)
   })
+
+  test('submit should not be disabled on valid formulary', async () => {
+    render(<RegistrationPage registration={new UserRegisterSpy()} />)
+
+    const userRegisterModel: UserRegisterModel = { email: "valid@email.com", password: "any-password" }
+
+    await simulateTyping("Email address", userRegisterModel.email)
+    await simulateTyping("Password", userRegisterModel.password)
+
+    const button = screen.getByRole('button')
+    expect(button).not.toHaveAttribute('disabled')
+  })
+
+  async function simulateTyping(label: string, value: string): Promise<void> {
+    const input = screen.getByLabelText(label)
+    await waitFor(() => fireEvent.change(input, { target: { value } }));
+    await waitFor(() => fireEvent.blur(input));
+  }
 })

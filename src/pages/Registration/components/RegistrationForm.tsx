@@ -24,7 +24,8 @@ export const RegistrationForm = ({
 
   return (
     <Formik initialValues={initialValues} onSubmit={(values) => onSubmit(values)}>
-      {({ handleSubmit }) => {
+      {(props) => {
+        const isValid = props.isValid === true && props.dirty === true
         return (
           <>
             <Field name="email" validate={validateEmail}>
@@ -54,8 +55,9 @@ export const RegistrationForm = ({
             </Field>
 
             <SubmitRegistrationButton
+              disabled={!isValid}
               isLoading={isLoading}
-              onSubmit={handleSubmit}
+              onSubmit={props.handleSubmit}
             />
           </>
         )
