@@ -190,7 +190,6 @@ Given the user is logged in
 - Name
 - Vicinity
 - Coordinates
-- PhotoURL
 
 #### Primary Course (happy path)
 1. Execute `Save Local` with above data
